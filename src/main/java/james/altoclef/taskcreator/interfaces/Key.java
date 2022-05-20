@@ -1,4 +1,4 @@
-package james.altoclef.taskcreator.utils;
+package james.altoclef.taskcreator.interfaces;
 
 public interface Key {
     public String getKey();

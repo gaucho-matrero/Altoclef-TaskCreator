@@ -1,7 +1,7 @@
 package james.altoclef.taskcreator;
 
-import james.altoclef.taskcreator.utils.IWritableTask;
-import james.altoclef.taskcreator.utils.Key;
+import james.altoclef.taskcreator.interfaces.IWritableTask;
+import james.altoclef.taskcreator.interfaces.Key;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +32,7 @@ class writeableTaskTest {
 
     @Test
     void writeObject() {
-        class stub_writeableObject implements IWritableTask{
+        class stub_writeableObject implements IWritableTask {
             @Override
             public JSONObject writeObject() { //stub of the interface
                 JSONObject temp = new JSONObject();
