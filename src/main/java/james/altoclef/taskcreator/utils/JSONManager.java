@@ -42,4 +42,8 @@ public class JSONManager {
         return filename;
     }
 
+    @Override
+    public String toString(){
+        return file.toString();
+    }
 }
