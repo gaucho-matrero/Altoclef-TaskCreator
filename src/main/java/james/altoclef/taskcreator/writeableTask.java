@@ -28,8 +28,8 @@ public class writeableTask implements IWritableTask {
         for(Key k : writeableItems){
             try{
                 obj.put(k.getKey(),k.getValue());
-            }catch (JSONException e){
-                e.printStackTrace();
+            }catch (JSONException ignored){
+                return null;
             }
         }
         purge();
