@@ -4,25 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="17d45797-19e1-48ae-889b-c3c15d08fea3" name="Changes" comment="Excluded json files from the push because we don't care.">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/james/altoclef/taskcreator/utils/JSONManagerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/james/altoclef/taskcreator/writeableTaskTest.java" afterDir="false" />
+    <list default="true" id="17d45797-19e1-48ae-889b-c3c15d08fea3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/customSubTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/graphics/AltoFrame.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/graphics/CompileButton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/interfaces/ICustomTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/utils/JSONManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/utils/JSONManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/Driver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/utils/IWritableTask.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/utils/Key.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/utils/emptyClass.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/writeableTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/james/altoclef/taskcreator/writeableTask.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/utils/JSONManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/utils/JSONManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/Driver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/utils/IWritableTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/interfaces/IWritableTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/utils/Key.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/interfaces/Key.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/utils/emptyClass.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/writeableTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/james/altoclef/taskcreator/writeableTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/james/altoclef/taskcreator/writeableTaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/james/altoclef/taskcreator/writeableTaskTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +63,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit5 Test Class" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -72,6 +81,14 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="SIGN_OFF_COMMIT" value="true" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -91,6 +108,9 @@
     <property name="create.test.in.the.same.root" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/test/java/james/altoclef/taskcreator/utils" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../.." />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
@@ -102,13 +122,13 @@
       <recent name="james.altoclef.taskcreator" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.JSONManagerTest">
+  <component name="RunManager" selected="Application.Driver">
     <configuration name="Driver" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="james.altoclef.taskcreator.Driver" />
       <module name="Altoclef-TaskCreator.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="james.altoclef.taskcreator.*" />
+          <option name="PATTERN" value="james.altoclef.taskcreator.interfaces.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -120,7 +140,7 @@
       <module name="Altoclef-TaskCreator.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="james.altoclef.taskcreator.utils.*" />
+          <option name="PATTERN" value="james.altoclef.taskcreator.interfaces.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -135,7 +155,7 @@
       <module name="Altoclef-TaskCreator.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="james.altoclef.taskcreator.utils.*" />
+          <option name="PATTERN" value="james.altoclef.taskcreator.interfaces.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -151,7 +171,7 @@
       <module name="Altoclef-TaskCreator.test" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="james.altoclef.taskcreator.utils.*" />
+          <option name="PATTERN" value="james.altoclef.taskcreator.interfaces.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -211,13 +231,21 @@
       <option name="project" value="LOCAL" />
       <updated>1653073043026</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Created unit tests">
+      <created>1653079831828</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1653079831828</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Project initialization + proof of concept" />
     <MESSAGE value="Excluded json files from the push because we don't care." />
-    <option name="LAST_COMMIT_MESSAGE" value="Excluded json files from the push because we don't care." />
+    <MESSAGE value="Created unit tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created unit tests" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
@@ -227,10 +255,10 @@
     <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$writeableTaskTest_writeObject.ic" NAME="writeableTaskTest.writeObject Coverage Results" MODIFIED="1653074387139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>james.altoclef.taskcreator.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$JSONManagerTest.ic" NAME="JSONManagerTest Coverage Results" MODIFIED="1653079238552" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+    <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$JSONManagerTest.ic" NAME="JSONManagerTest Coverage Results" MODIFIED="1653079761851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>james.altoclef.taskcreator.utils.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$JSONManagerTest_write.ic" NAME="JSONManagerTest.write Coverage Results" MODIFIED="1653079408218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+    <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$JSONManagerTest_write.ic" NAME="JSONManagerTest.write Coverage Results" MODIFIED="1653079693032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>james.altoclef.taskcreator.utils.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/Altoclef_TaskCreator$writeableTaskTest.ic" NAME="writeableTaskTest Coverage Results" MODIFIED="1653074465852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

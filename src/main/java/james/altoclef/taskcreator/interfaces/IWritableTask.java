@@ -1,4 +1,4 @@
-package james.altoclef.taskcreator.utils;
+package james.altoclef.taskcreator.interfaces;
 
 import org.json.JSONObject;
 

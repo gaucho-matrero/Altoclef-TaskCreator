@@ -1,44 +1,79 @@
 package james.altoclef.taskcreator;
 
-import james.altoclef.taskcreator.utils.JSONManager;
-import james.altoclef.taskcreator.utils.Key;
-import james.altoclef.taskcreator.utils.emptyClass;
+import james.altoclef.taskcreator.graphics.AltoFrame;
+import james.altoclef.taskcreator.interfaces.ICustomTask;
+import james.altoclef.taskcreator.interfaces.Key;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.*;
-
 public class Driver {
     public static void main(String[] arg){
-        System.out.println("Hello World");
-        JSONManager manager = new JSONManager("CustomTask");
+        //This is the way to do stuff
+/*        JSONManager manager = new JSONManager("CustomTask");
+        JSONArray customTasks = new JSONArray();
         try{
-            JSONArray customTasks = new JSONArray();
             manager.add("prefix","custom");
-            customTasks.put(writeCustomTask("gearup","gets 64 diamonds"));
+            customTasks.put(newCustomTask("gearup","gets 64 diamonds",new ICustomTask[]{
+                    new customSubTask("get",new Object[]{"diamond",64})
+                    }));
+            customTasks.put(newCustomTask("test2","gets a diamond pickaxe, them goes to 0 0 0 nether",new ICustomTask[]{
+                    new customSubTask("get",new Object[]{"diamond_pickaxe",1}),
+                    new customSubTask("goto",new Object[]{0,0,0,"nether"})
+            }));
             manager.add("custom-tasks",customTasks);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        manager.write();
+        manager.write();*/
+
+        //actual driver code
+        AltoFrame mainFrame = new AltoFrame();
+        mainFrame.build();
+
     }
 
-    public static JSONObject writeCustomTask(String name,String desc) throws JSONException {
-        //TODO port this method to the gui.
-        JSONObject customTask = new JSONObject(); //includes name, desription, and task array
-        JSONArray taskArray = new JSONArray(); // task array to add to customTask
-        writeableTask gearup = new writeableTask();
-        customTask.put("name",name);
-        customTask.put("description",desc);
-        addSubTask(gearup,"command",new Object[]{"diamond",64});
-        taskArray.put(gearup.writeObject());
-        addSubTask(gearup,"goto",new Object[]{0,0,0,"overworld"});
-        taskArray.put(gearup.writeObject());
-        customTask.put("tasks",taskArray);
-        return customTask;
-    }
+    public static JSONObject newCustomTask(String name, String desc, ICustomTask[] ctasks) throws JSONException {
+        writeableTask custom_task = new writeableTask();
+        custom_task.add(new Key() {
+            @Override
+            public String getKey() {
+                return "name";
+            }
 
+            @Override
+            public Object getValue() {
+                return name;
+            }
+        });
+        custom_task.add(new Key() {
+            @Override
+            public String getKey() {
+                return "description";
+            }
+
+            @Override
+            public Object getValue() {
+                return desc;
+            }
+        });
+        JSONArray subTasks = new JSONArray();
+        for (ICustomTask st:ctasks) {
+            subTasks.put(st.build());
+        }
+        custom_task.add(new Key() {
+            @Override
+            public String getKey() {
+                return "tasks";
+            }
+
+            @Override
+            public Object getValue() {
+                return subTasks;
+            }
+        });
+        return custom_task.writeObject();
+    }
     private static void addSubTask(writeableTask gearup, String command, Object[] objects) {
         gearup.add(new Key(){
 
