@@ -1,0 +1,14 @@
+contrary to what you may think, this file is for people who are developing this further.
+
+HOW TO FIX INCREMENTAL CHANGES
+
+change the gradle settings from gradle to IJ, run the project, change it back
+
+HOW TO SAVE GUI CHANGES
+
+this is the most annoying.
+Make your changes
+Changeg the settings in gui designer to "binary"
+do the "HOW TO FIX INCREMENTAL CHANGES FIX"
+run with gradle
+Take a sanity break

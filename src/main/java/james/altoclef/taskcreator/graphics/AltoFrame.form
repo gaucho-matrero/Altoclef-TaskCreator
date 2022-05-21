@@ -23,12 +23,12 @@
           </grid>
         </constraints>
         <properties>
-          <text value="custom"/>
+          <text value="custom2"/>
         </properties>
       </component>
       <component id="f0e43" class="javax.swing.JTable" binding="table_tasks">
         <constraints>
-          <grid row="0" column="3" row-span="7" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="0" column="3" row-span="9" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
@@ -41,7 +41,7 @@
         <properties>
           <background color="-9346490"/>
           <foreground color="-4500880"/>
-          <text value="v0.0"/>
+          <text value="v0.5"/>
         </properties>
       </component>
       <component id="3bec4" class="javax.swing.JButton" binding="btn_newTask">
