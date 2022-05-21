@@ -29,8 +29,6 @@ public class Driver {
 
         //actual driver code
         AltoFrame mainFrame = new AltoFrame();
-        mainFrame.build();
-
     }
 
     public static JSONObject newCustomTask(String name, String desc, ICustomTask[] ctasks) throws JSONException {
