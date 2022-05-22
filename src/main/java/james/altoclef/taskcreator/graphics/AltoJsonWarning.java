@@ -13,6 +13,7 @@ public class AltoJsonWarning extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JLabel l_warning_text;
+    private boolean ok_pressed = false;
 
     public AltoJsonWarning() {
         setContentPane(contentPane);
@@ -27,8 +28,12 @@ public class AltoJsonWarning extends JDialog {
     }
 
     private void onOK() {
-        // add your code here
+        ok_pressed = true;
         dispose();
+    }
+
+    public boolean OKPressed() {
+        return this.ok_pressed;
     }
 
     public void setL_warning_text(String s) {
@@ -118,5 +123,6 @@ public class AltoJsonWarning extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
+
 
 }

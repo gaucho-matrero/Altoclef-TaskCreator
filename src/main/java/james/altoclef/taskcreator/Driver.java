@@ -3,14 +3,18 @@ package james.altoclef.taskcreator;
 import james.altoclef.taskcreator.graphics.AltoFrame;
 import james.altoclef.taskcreator.interfaces.ICustomTask;
 import james.altoclef.taskcreator.interfaces.Key;
+import james.altoclef.taskcreator.utils.JSONManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Driver {
-    public static void main(String[] arg){
+    public static void main(String[] arg) throws IOException, ParseException {
         //This is the way to do stuff
 /*        JSONManager manager = new JSONManager("CustomTask");
         JSONArray customTasks = new JSONArray();
@@ -35,7 +39,7 @@ public class Driver {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        AltoFrame mainFrame = new AltoFrame();
+        AltoFrame mainFrame = new AltoFrame("CustomTasks23.json");
     }
 
     public static JSONObject newCustomTask(String name, String desc, ICustomTask[] ctasks) throws JSONException {
