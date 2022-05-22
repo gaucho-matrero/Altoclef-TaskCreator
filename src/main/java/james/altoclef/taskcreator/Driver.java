@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 public class Driver {
     public static void main(String[] arg){
         //This is the way to do stuff
@@ -28,6 +30,11 @@ public class Driver {
         manager.write();*/
 
         //actual driver code
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Windows Look and feel
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         AltoFrame mainFrame = new AltoFrame();
     }
 
