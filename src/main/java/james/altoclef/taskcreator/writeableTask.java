@@ -2,7 +2,6 @@ package james.altoclef.taskcreator;
 
 import james.altoclef.taskcreator.interfaces.IWritableTask;
 import james.altoclef.taskcreator.interfaces.Key;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -26,11 +25,7 @@ public class writeableTask implements IWritableTask {
     public JSONObject writeObject() {
         JSONObject obj = new JSONObject();
         for(Key k : writeableItems){
-            try{
-                obj.put(k.getKey(),k.getValue());
-            }catch (JSONException ignored){
-                return null;
-            }
+            obj.put(k.getKey(),k.getValue());
         }
         purge();
         return obj;

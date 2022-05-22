@@ -2,12 +2,11 @@ package james.altoclef.taskcreator.utils;
 
 
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JSONManager {
     private final String filename;
@@ -17,9 +16,29 @@ public class JSONManager {
      * Creates a new JSON manager who will be able to write a JSON file with "filename"/
      * @param filename the name of the file w/o the JSON extension.
      */
-    public JSONManager(String filename){
+    public JSONManager(String filename) throws IOException, ParseException {
+        this.filename = filename;
+        FileReader fr = new FileReader(filename);
+        JSONParser pr = new JSONParser();
+        file = new JSONObject(pr.parse(fr).toString());
+    }
+    public JSONManager(){
+        this.filename = "CustomTasks.json";
         file = new JSONObject();
-        this.filename = filename+".json";
+    }
+
+    public String[] getTaskNames() throws JSONException{
+        try {
+            JSONArray tasks = file.getJSONArray("custom-tasks");
+            String[] res = new String[tasks.length()];
+            for (int i = 0; i < res.length; i++) {
+                JSONObject obj = tasks.getJSONObject(i);
+                res[i] = obj.getString("name");
+            }
+            return res;
+        }catch (JSONException e){
+            throw e;
+        }
     }
 
     public void write(){
@@ -45,5 +64,9 @@ public class JSONManager {
     @Override
     public String toString(){
         return file.toString();
+    }
+
+    public JSONObject getFile() {
+        return this.file;
     }
 }

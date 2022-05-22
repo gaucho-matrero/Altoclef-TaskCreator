@@ -3,12 +3,17 @@ package james.altoclef.taskcreator.graphics;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import james.altoclef.taskcreator.utils.JSONManager;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class AltoFrame extends JFrame {
     private JPanel mainPanel;
@@ -24,12 +29,11 @@ public class AltoFrame extends JFrame {
     private JLabel l_task_description_header;
     private JLabel l_task_description;
     private JButton btn_edit_task;
-    private final JSONObject file;
-    private boolean showWarning;
+    private JSONObject file;
+    private JSONManager manager;
 
     public AltoFrame() {
         file = new JSONObject();
-        showWarning = true;
         addMenu();
         setContentPane(mainPanel);
         setTitle("Altoclef-TaskCreator");
@@ -39,28 +43,44 @@ public class AltoFrame extends JFrame {
         setResizable(false);
         addActionListeners();
         setVisible(true);
-        displayWarning();
+        displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
     }
 
     /**
      * Create an instance of AltoFrame with an already existing CustomTasks.json
      * file
      *
-     * @param file the path to an existing JSON file. Name is irrelevant.
+     * @param filename the path to an existing JSON file. Name is irrelevant.
      */
-    public AltoFrame(JSONObject file) {
-        this.file = file;
-        showWarning = false;
+    public AltoFrame(String filename) {
+        JSONObject file1;
         this.setLocationRelativeTo(null);
         addMenu();
         setContentPane(mainPanel);
         setTitle("Altoclef-TaskCreator");
-        setLocationRelativeTo(null);
         setSize(750, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         addActionListeners();
+        setLocationRelativeTo(null);
         setVisible(true);
+        try {
+            manager = new JSONManager(filename);
+            file1 = manager.getFile();
+        } catch (Exception e) {
+            manager = new JSONManager();
+            file1 = new JSONObject();
+            displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
+        }
+        this.file = file1;
+        try {
+            for (String t : manager.getTaskNames()) {
+                table_tasks.add(new JLabel(t));
+            }
+            setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
+        } catch (JSONException ignored) {
+            //If this happens, the "custom-tasks" field had a problem and can be ignored.
+        }
     }
 
     private void addActionListeners() {
@@ -110,32 +130,42 @@ public class AltoFrame extends JFrame {
         });
         btn_Compile.addActionListener(new ActionListener() {
             /**
-             * Invoked when an action occurs.
-             *
+             * Invoked when compile button is pressed.
+             * @apiNote Although the user gets to specify the file name, Altoclef will
+             * only load it if it has the name "CustomTasks.json". Having a flexible filenaming system allows
+             * users to save different configurations and manually load them. We may modify altoclef's behavior in the future
+             * to enable loading multiple file names.
              * @param e the event to be processed
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                FileDialog fd = new FileDialog(new JFrame(), "Save", FileDialog.SAVE);
+                fd.setTitle("Choose a  save location");
+                //fd.setFile("CustomTasks.json"); uncomment if we want to force the file name
+                fd.setVisible(true);
+                try {
+                    JSONObject toWrite = new JSONObject(); //TODO Set this as the post compile JSON
+                    FileWriter filew = new FileWriter(fd.getFile() + ".json");
+                    toWrite.write(filew);
+                } catch (IOException | JSONException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
 
-
-    /* TODO Think about long term implications of making this private. Who is
-     *   acutally going to handle the JSON files. Should FRAME be the one to
-     * complain
-     *   If there is a problem
-     * */
-    private void displayWarning() {
+    /**
+     * Displays warning text.
+     */
+    private void displayWarning(String message) {
         AltoJsonWarning warningMessage = new AltoJsonWarning();
         warningMessage.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         Image icon = Toolkit.getDefaultToolkit().getImage("./img/warning.png");
         warningMessage.setIconImage(icon);
         warningMessage.setTitle("Warning: Cannot load JSON file");
         //TODO get this fixed. It displays the warning wrong.
-        warningMessage.setL_warning_text("Altoclef-TaskCreator was unable to find or unable to load any JSONfiles. Changes will be saved to a new JSON file");
-        warningMessage.setSize(450, 140);
+        warningMessage.setL_warning_text("<html><center><p style=\"width:300px\">" + message + "</p></center></html>");
+        warningMessage.setSize(450, 200);
         warningMessage.setLocationRelativeTo(null);
         warningMessage.setVisible(true);
     }
@@ -151,13 +181,56 @@ public class AltoFrame extends JFrame {
         fileMenu_subMenuOpen.add(fileMenu_subMenuOpen_fromFileSystem);
         fileMenu_subMenuOpen.add(fileMenu_subMenuOpen_fromString);
         fileMenu.add(fileMenu_subMenuOpen);
-
         JMenu options = new JMenu("Tools");
         JMenuItem options_viewUsageGuide = new JMenuItem("Usage Guide");
         options.add(options_viewUsageGuide);
         topMenu.add(fileMenu);
         topMenu.add(options);
+        { //action listeners
+            fileMenu_subMenuOpen_fromFileSystem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    FileDialog fd = new FileDialog(new JFrame(), "Test", FileDialog.LOAD);
+                    fd.setVisible(true);
+                    //TODO load this file. Printing is temporary
+                    try {
+                        loadJSONfile(fd);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (ParseException ex) {
+                        displayWarning("Unable to load file");
+                    }
+                }
+            });
+            fileMenu_newFile.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    AltoJsonWarning warning = new AltoJsonWarning();
+                    AltoJsonWarning warningMessage = new AltoJsonWarning();
+                    warningMessage.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                    Image icon = Toolkit.getDefaultToolkit().getImage("./img/warning.png");
+                    warningMessage.setIconImage(icon);
+                    warningMessage.setTitle("Warning: Unsaved changes");
+                    warningMessage.setL_warning_text("<html><center><p style=\"width:300px\">" + "Unsaved changes will be lost" + "</p></center></html>");
+                    warningMessage.setSize(450, 200);
+                    warningMessage.setLocationRelativeTo(null);
+                    warningMessage.setVisible(true);
+                    if (warningMessage.OKPressed()) {
+                        manager = new JSONManager();
+                        file = manager.getFile();
+                        setTitle("Altoclef-TaskCreator");
+                    }
+                }
+            });
+        }
         this.setJMenuBar(topMenu);
+
+    }
+
+    private void loadJSONfile(FileDialog fd) throws IOException, ParseException {
+        manager = new JSONManager(fd.getFile());
+        file = manager.getFile();
+        setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
     }
 
     {
