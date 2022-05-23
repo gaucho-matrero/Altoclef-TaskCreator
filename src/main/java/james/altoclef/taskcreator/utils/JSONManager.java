@@ -10,7 +10,7 @@ import org.json.simple.parser.ParseException;
 
 public class JSONManager {
     private final String filename;
-    JSONObject file;
+    JSONObject file; //TODO Never allow a task with the same name to be made
 
     /**
      * Creates a new JSON manager who will be able to write a JSON file with "filename"/
