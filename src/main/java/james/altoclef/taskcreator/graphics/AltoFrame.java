@@ -9,9 +9,11 @@ import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -43,7 +45,6 @@ public class AltoFrame extends JFrame {
         setResizable(false);
         addActionListeners();
         setVisible(true);
-        displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
     }
 
     /**
@@ -52,35 +53,30 @@ public class AltoFrame extends JFrame {
      *
      * @param filename the path to an existing JSON file. Name is irrelevant.
      */
-    public AltoFrame(String filename) {
-        JSONObject file1;
-        this.setLocationRelativeTo(null);
-        addMenu();
-        setContentPane(mainPanel);
-        setTitle("Altoclef-TaskCreator");
-        setSize(750, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        addActionListeners();
-        setLocationRelativeTo(null);
-        setVisible(true);
+    public AltoFrame(String filename) throws IOException, ParseException {
+        {
+            this.setLocationRelativeTo(null);
+            addMenu();
+            setContentPane(mainPanel);
+            setTitle("Altoclef-TaskCreator");
+            setSize(750, 500);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setResizable(false);
+            addActionListeners();
+            setLocationRelativeTo(null);
+            setVisible(true);
+            table_tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        } //init
         try {
             manager = new JSONManager(filename);
-            file1 = manager.getFile();
+            loadJsonFile(manager.getFile());
+
         } catch (Exception e) {
             manager = new JSONManager();
-            file1 = new JSONObject();
             displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
-        }
-        this.file = file1;
-        try {
-            for (String t : manager.getTaskNames()) {
-                table_tasks.add(new JLabel(t));
-            }
-            setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
-        } catch (JSONException ignored) {
-            //If this happens, the "custom-tasks" field had a problem and can be ignored.
-        }
+        } //load default file
+
+        refreshTable();
     }
 
     private void addActionListeners() {
@@ -186,18 +182,16 @@ public class AltoFrame extends JFrame {
         options.add(options_viewUsageGuide);
         topMenu.add(fileMenu);
         topMenu.add(options);
+
         { //action listeners
             fileMenu_subMenuOpen_fromFileSystem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    FileDialog fd = new FileDialog(new JFrame(), "Test", FileDialog.LOAD);
-                    fd.setVisible(true);
-                    //TODO load this file. Printing is temporary
                     try {
-                        loadJSONfile(fd);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (ParseException ex) {
+                        FileDialog fd = new FileDialog(new JFrame(), "Select a file", FileDialog.LOAD);
+                        fd.setVisible(true);
+                        exploreForJson(fd);
+                    } catch (Exception ignored) {
                         displayWarning("Unable to load file");
                     }
                 }
@@ -205,7 +199,6 @@ public class AltoFrame extends JFrame {
             fileMenu_newFile.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    AltoJsonWarning warning = new AltoJsonWarning();
                     AltoJsonWarning warningMessage = new AltoJsonWarning();
                     warningMessage.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                     Image icon = Toolkit.getDefaultToolkit().getImage("./img/warning.png");
@@ -215,22 +208,68 @@ public class AltoFrame extends JFrame {
                     warningMessage.setSize(450, 200);
                     warningMessage.setLocationRelativeTo(null);
                     warningMessage.setVisible(true);
+
                     if (warningMessage.OKPressed()) {
                         manager = new JSONManager();
                         file = manager.getFile();
                         setTitle("Altoclef-TaskCreator");
+                        refreshTable();
                     }
                 }
             });
         }
+
         this.setJMenuBar(topMenu);
 
     }
 
-    private void loadJSONfile(FileDialog fd) throws IOException, ParseException {
+    private void exploreForJson(FileDialog fd) throws IOException, ParseException {
         manager = new JSONManager(fd.getFile());
         file = manager.getFile();
         setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
+        refreshTable();
+    }
+
+    private void loadJsonFile(JSONObject file) {
+        manager.setFile(file);
+        this.file = manager.getFile();
+        setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
+        refreshTable();
+    }
+
+    /**
+     * Refreshes data displayed on the table
+     *
+     * @implNote This implemnentation has only one column "Task-Title"
+     * @implSpec This implementation is read only and does not modify how data
+     * is acquired
+     */
+    private void refreshTable() {
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Task Title"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
+        table_tasks.setModel(model);
+
+        try {
+            file = manager.getFile(); //ensure that we have a file. If we don't, we can except.
+            if (file == null) {
+                displayWarning("Unable to load json file");
+                throw new JSONException("Unable to load json file");
+            }
+            for (String title : manager.getTaskNames()) {
+                model.addRow(new String[]{title});
+            }
+            table_tasks.setModel(model);
+            table_tasks.setVisible(true);
+
+
+        } catch (Exception ignored) {
+
+        }
     }
 
     {
@@ -272,12 +311,13 @@ public class AltoFrame extends JFrame {
         l_v_label = new JLabel();
         l_v_label.setBackground(new Color(-9346490));
         l_v_label.setForeground(new Color(-4500880));
-        l_v_label.setText("v0.5");
+        l_v_label.setText("v0.6");
         mainPanel.add(l_v_label, new GridConstraints(16, 0, 1, 3,
                 GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_newTask = new JButton();
+        btn_newTask.setHideActionText(false);
         btn_newTask.setText("New Task");
         mainPanel.add(btn_newTask, new GridConstraints(10, 0, 1, 2,
                 GridConstraints.ANCHOR_CENTER,
@@ -350,5 +390,4 @@ public class AltoFrame extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
-
 }
