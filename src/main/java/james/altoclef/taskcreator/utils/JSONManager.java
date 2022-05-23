@@ -41,17 +41,6 @@ public class JSONManager {
         }
     }
 
-    public void write(){
-        try {
-            FileWriter filew = new FileWriter(filename);
-            file.write(filew);
-            filew.close();
-        } catch (IOException | JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public void add(String key, Object value) throws JSONException {
         file.put(key,value);
     }
@@ -68,5 +57,9 @@ public class JSONManager {
 
     public JSONObject getFile() {
         return this.file;
+    }
+
+    public void setFile(JSONObject file) {
+        this.file=file;
     }
 }

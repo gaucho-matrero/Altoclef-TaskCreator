@@ -39,9 +39,10 @@ public class Driver {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        AltoFrame mainFrame = new AltoFrame("CustomTasks23.json");
+        AltoFrame mainFrame = new AltoFrame("CustomTasks.json");
     }
 
+    //TODO Move to AltoFrame
     public static JSONObject newCustomTask(String name, String desc, ICustomTask[] ctasks) throws JSONException {
         writeableTask custom_task = new writeableTask();
         custom_task.add(new Key() {
