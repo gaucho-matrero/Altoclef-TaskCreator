@@ -3,6 +3,12 @@ package james.altoclef.taskcreator.utils;
 
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.*;
+import java.util.*;
 
 import org.json.*;
 import org.json.simple.parser.JSONParser;
@@ -21,6 +27,11 @@ public class JSONManager {
         FileReader fr = new FileReader(filename);
         JSONParser pr = new JSONParser();
         file = new JSONObject(pr.parse(fr).toString());
+    }
+    public JSONManager(CompressedString contents) throws ParseException {
+        this.filename = "";
+        JSONParser pr = new JSONParser();
+        file = new JSONObject(pr.parse(contents.toString()).toString());
     }
     public JSONManager(){
         this.filename = "CustomTasks.json";
@@ -61,5 +72,37 @@ public class JSONManager {
 
     public void setFile(JSONObject file) {
         this.file=file;
+    }
+
+
+
+    public String compressToString() throws UnsupportedEncodingException {
+        String jsonString = file.toString();
+        byte[] jsonbytes = jsonString.getBytes(StandardCharsets.UTF_8);
+        Deflater compressor = new Deflater();
+        compressor.setInput(jsonbytes);
+        byte[] compressed = new byte[jsonbytes.length]; //should ALWAYS be big enough to contain compressed data
+        compressor.finish();
+        int resultLength = compressor.deflate(compressed);
+        String result = "UNABLE TO CONVERT";
+        result = new String(Base64.getEncoder().encode(compressed));
+        return result;
+    }
+
+    public JSONObject decompressToJson(String decom) throws UnsupportedEncodingException, DataFormatException {
+        byte[] jsonbytes = Base64.getDecoder().decode(decom);
+        Inflater decompressor = new Inflater();
+        decompressor.setInput(jsonbytes);
+        byte[] decompressed = new byte[2048]; //should ALWAYS be big enough to contain compressed data
+        int resultLength = decompressor.inflate(decompressed);
+        decompressor.end();
+        JSONObject unableToConvert = new JSONObject();
+        try {
+            String result = new String(decompressed, 0, resultLength, StandardCharsets.UTF_8);
+            this.file = new JSONObject(result);
+        }catch (Exception ignored){
+            this.file = unableToConvert;
+        }
+        return file;
     }
 }
