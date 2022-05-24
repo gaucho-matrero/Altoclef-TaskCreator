@@ -27,6 +27,26 @@ public class AltoJsonWarning extends JDialog {
         });
     }
 
+    public AltoJsonWarning(String message){
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        Image icon = Toolkit.getDefaultToolkit().getImage("./img/warning.png");
+        setIconImage(icon);
+        setTitle("Warning: Cannot load JSON file");
+        setL_warning_text("<html><center><p style=\"width:300px\">" + message + "</p></center></html>");
+        setSize(450, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setContentPane(contentPane);
+        setModal(true);
+        getRootPane().setDefaultButton(buttonOK);
+
+        buttonOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOK();
+            }
+        });
+    }
+
     private void onOK() {
         ok_pressed = true;
         dispose();
@@ -40,12 +60,6 @@ public class AltoJsonWarning extends JDialog {
         l_warning_text.setText(s);
     }
 
-    public static void main(String[] args) {
-        AltoJsonWarning dialog = new AltoJsonWarning();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
-    }
 
 
 }

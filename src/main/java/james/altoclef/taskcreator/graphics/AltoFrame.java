@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class AltoFrame extends JFrame {
+    public static final int UNLOCK_ON_CLOSE = 99;
     private JPanel mainPanel;
     private JTextField tf_prefix;
     private JTable table_tasks;
@@ -93,7 +94,16 @@ public class AltoFrame extends JFrame {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                NewTaskFrame ntf = new NewTaskFrame(file); //TODO Make this work
+                /*
+                TODO
+                    The result of the new task frame will be a new custom task.
+                    file.getJSONarray[0] gets the custom tasks data
+                    we add the results of new
+                 */
+                JSONArray array_on_file = file.getJSONArray("custom-tasks");
+                NewTaskFrame nTF = new NewTaskFrame();
+                array_on_file.put(nTF.write());
+                refreshTable();
             }
         });
         btn_edit_task.addActionListener(new ActionListener() {
@@ -141,7 +151,6 @@ public class AltoFrame extends JFrame {
                 }
             }
         });
-
         btn_Compile.addActionListener(new ActionListener() {
             /**
              * Invoked when compile button is pressed.
@@ -158,20 +167,19 @@ public class AltoFrame extends JFrame {
                 //fd.setFile("CustomTasks.json"); uncomment if we want to force the file name
                 fd.setVisible(true);
                 try {
+                    String newFilename = fd.getFile().endsWith(".json") ? fd.getFile() : fd.getFile() + ".json";
                     JSONObject toWrite = file;
-                    FileWriter filew = new FileWriter(fd.getFile());
+                    FileWriter filew = new FileWriter(newFilename);
                     toWrite.write(filew);
                     filew.close();
-                    manager = new JSONManager(fd.getFile());
+                    manager = new JSONManager(newFilename);
                     inform(false);
-                } catch (IOException | JSONException | ParseException ignored) {
-                   displayWarning("Failed to load file");
+                } catch (IOException | JSONException | ParseException | NullPointerException ex) {
+                   if(!(ex instanceof NullPointerException))
+                        displayWarning("Failed to load file");
                 }
                 loadJsonFile(manager.getFile());
-            } /* TODO
-                    1. Cancel saving if window is closed, but no save button is pressed.
-                    2. Remove the ".json.json" problem, and set .json as the default file extension.
-            */
+            }
         });
     }
 
@@ -189,7 +197,7 @@ public class AltoFrame extends JFrame {
 
     /**
      * Displays warning text.
-     */
+     */ //TODO Refactor
     private void displayWarning(String message) {
         AltoJsonWarning warningMessage = new AltoJsonWarning();
         warningMessage.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -290,15 +298,6 @@ public class AltoFrame extends JFrame {
 
         this.setJMenuBar(topMenu);
 
-    }
-
-    /**
-     * Used to refresh everything
-     */
-    private void refresh() {
-        l_shareableString.setText("");
-        setTitle("");
-        refreshTable();
     }
 
     private void exploreForJson(FileDialog fd) throws IOException, ParseException {
