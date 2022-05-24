@@ -27,12 +27,13 @@ public class AltoJsonWarning extends JDialog {
         });
     }
 
-    public AltoJsonWarning(String message){
+    public AltoJsonWarning(String title, String message){
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         Image icon = Toolkit.getDefaultToolkit().getImage("./img/warning.png");
         setIconImage(icon);
-        setTitle("Warning: Cannot load JSON file");
+        setTitle(title);
         setL_warning_text("<html><center><p style=\"width:300px\">" + message + "</p></center></html>");
+        l_warning_text.setVisible(true);
         setSize(450, 200);
         setLocationRelativeTo(null);
         setVisible(true);
