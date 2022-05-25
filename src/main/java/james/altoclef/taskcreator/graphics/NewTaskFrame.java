@@ -35,13 +35,14 @@ public class NewTaskFrame extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setModal(true);
         setContentPane(main_panel);
-        initComponents();
+
         setSize(500, 300);
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btn_save);
         taskToWrite = null;
         subTaskList = new ArrayList<customSubTask>();
-        setVisible(true); //must always be last
+        initComponents();
+        setVisible(true);//must always be last
     }
     
     private void initComponents(){
@@ -67,7 +68,6 @@ public class NewTaskFrame extends JDialog {
                 refreshTable();
             }
         });
-        setVisible(true);//must always be last
     }
 
     private void refreshTable() {
