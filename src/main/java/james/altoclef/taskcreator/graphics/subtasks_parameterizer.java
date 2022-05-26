@@ -5,9 +5,10 @@ import james.altoclef.taskcreator.customSubTask;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class subtasks_parameterizer extends JDialog {
@@ -17,14 +18,16 @@ public class subtasks_parameterizer extends JDialog {
     private JButton btn_add;
     private JButton btn_done;
     private JLabel l_type;
-    private JComboBox combo_x;
-    private JComboBox combo_y;
-    private JComboBox combo_z;
     private JComboBox<String> combo_itemCount_or_dimension;
     private JTextField tf_target;
-
+    private JTextField tf_x;
+    private JTextField tf_y;
+    private JTextField tf_z;
+    private int editing=-1;
     private final List<Object> params;
     private final String command;
+    private boolean discard = true;
+
     public subtasks_parameterizer(String command) {
         setContentPane(main_panel);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -32,6 +35,21 @@ public class subtasks_parameterizer extends JDialog {
         setModal(true);
         this.command = command;
         params = new ArrayList<Object>();
+        initComponents();
+        setVisible(true); // must always be last
+    }
+    public subtasks_parameterizer(customSubTask task) {
+        setContentPane(main_panel);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setSize(400, 250);
+        setModal(true);
+        this.command = task.getType();
+        params = new ArrayList<Object>();
+        Collections.addAll(params, task.getParameters());
+        if(!task.getType().equals("get")){
+            toggleContinuedAdd(false);
+        }
+        discard = false;
         initComponents();
         setVisible(true); // must always be last
 
@@ -46,9 +64,21 @@ public class subtasks_parameterizer extends JDialog {
                 case "goto" -> loadUI_coords();
                 default -> loadUI();
             }
-        } // ui settings
 
-        {
+            action_table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if(e.getClickCount()==2){
+                        if(action_table.getSelectedRow()!=-1){
+                            editing = action_table.getSelectedRow();
+                            toggleContinuedAdd(true);
+                            btn_add.setText("Save");
+                        }
+                    }
+                }
+            });
+
+         // ui settings
             btn_add.addActionListener(new ActionListener() {
                 /**
                  * Invoked when an action occurs.
@@ -61,36 +91,100 @@ public class subtasks_parameterizer extends JDialog {
                     TODO
                         Add other tasks here
                      */
-                    if(command.equals("get"))
-                        params.add(new Object[]{item_selector.getSelectedItem(),combo_itemCount_or_dimension.getSelectedItem()});
-                    else if(command.equals("goto"))
-                        params.add(new Object[]{combo_x.getSelectedItem(),combo_y.getSelectedItem(),combo_z,combo_itemCount_or_dimension.getSelectedItem()});
-                    else
-                        params.add(new Object[]{tf_target.getText()});
+                    if(command.equals("get")){
+                        if(editing != -1){
+                            params.remove(editing);
+                            params.add(editing,new Object[]{item_selector.getSelectedItem(),combo_itemCount_or_dimension.getSelectedItem()});
+                        }else{
+                            params.add(new Object[]{item_selector.getSelectedItem(),combo_itemCount_or_dimension.getSelectedItem()});
+                        }
+                            toggleContinuedAdd(true);}
+                    else if(command.equals("goto")){
+                        if(editing != -1){
+                            params.remove(editing);
+                            params.add(editing,new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                        }else {
+                            params.add(new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                        }
+                        toggleContinuedAdd(false);}
+                    else{
+                        if(editing != -1){
+                            params.remove(editing);
+                            params.add(editing, new Object[]{tf_target.getText()});
 
+                        }else {
+                            params.add(new Object[]{tf_target.getText()});
+                        }
+                        toggleContinuedAdd(false);}
+
+                    editing=-1;
+                    btn_add.setText("add");
                     refreshTable();
                 }
             });
+            btn_done.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    onDone();
+                }
+            });
         } // action listeners
+        refreshTable();
+    }
+
+    private void toggleContinuedAdd(boolean b) {
+        if(!b){
+            item_selector.setEnabled(false);
+            combo_itemCount_or_dimension.setEnabled(false);
+            tf_x.setEnabled(false);
+            tf_y.setEnabled(false);
+            tf_z.setEnabled(false);
+            tf_target.setEnabled(false);
+            btn_add.setEnabled(false);
+        }else{
+            item_selector.setEnabled(true);
+            combo_itemCount_or_dimension.setEnabled(true);
+            tf_x.setEnabled(true);
+            tf_y.setEnabled(true);
+            tf_z.setEnabled(true);
+            tf_target.setEnabled(true);
+            btn_add.setEnabled(true);
+        }
+    }
+
+    private void onDone() {
+        discard = false;
+        dispose();
     }
 
     private void refreshTable() {
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"parameters"},0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"parameters"},0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
         action_table.setModel(model);
         try{
-            for(customSubTask) //TODO for each sub task, add it to the table FINISH
+            for(Object param : params){
+                Object[] param_inner = (Object[]) param; //will always be an object
+                model.addRow(new String[]{Arrays.toString(param_inner)});
+            }
         }catch (Exception ignored){
             AltoJsonWarning aw = new AltoJsonWarning("Table error","error loading table");
             aw.setVisible(true);
         }
+
     }
 
     private void loadUI() {
         l_type.setText(command);
         item_selector.setVisible(false);
-        combo_x.setVisible(false);
-        combo_y.setVisible(false);
-        combo_z.setVisible(false);
+        combo_itemCount_or_dimension.setVisible(false);
+        tf_x.setVisible(false);
+        tf_y.setVisible(false);
+        tf_z.setVisible(false);
         tf_target.setVisible(true);
     }
 
@@ -98,27 +192,29 @@ public class subtasks_parameterizer extends JDialog {
         l_type.setText("goto");
         item_selector.setVisible(false);
         tf_target.setVisible(false);
-        combo_x.setVisible(true);
-        combo_y.setVisible(true);
-        combo_z.setVisible(true);
+        tf_x.setVisible(true);
+        tf_y.setVisible(true);
+        tf_z.setVisible(true);
+        combo_itemCount_or_dimension.setVisible(true);
         combo_itemCount_or_dimension.addItem("overworld");
         combo_itemCount_or_dimension.addItem("nether");
         combo_itemCount_or_dimension.addItem("end");
         combo_itemCount_or_dimension.addItem(""); //whatever current dimension is
+
     }
 
     private void loadUI_items() {
         l_type.setText("get");
-        combo_x.setVisible(false);
-        combo_y.setVisible(false);
-        combo_z.setVisible(false);
+        tf_x.setVisible(false);
+        tf_y.setVisible(false);
+        tf_z.setVisible(false);
         tf_target.setVisible(false);
         loadItemComboBoxes();
     }
 
     private void loadItemComboBoxes() {
         for(String s: MinecraftUtil.getItems()){
-            item_selector.addItem(s);
+                    item_selector.addItem(s);
         }
         for(int i=1; i<65; i++){
             combo_itemCount_or_dimension.addItem(i+"");
@@ -128,5 +224,9 @@ public class subtasks_parameterizer extends JDialog {
 
     public customSubTask getItems() {
        return new customSubTask(l_type.getText(),params.toArray());
+    }
+
+    public boolean shouldDiscard() {
+        return discard;
     }
 }
