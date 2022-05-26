@@ -4,6 +4,8 @@ import james.altoclef.taskcreator.interfaces.ICustomTask;
 import james.altoclef.taskcreator.interfaces.Key;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 public class customSubTask implements ICustomTask {
     private final String type;
     private final Object[] parameters;
@@ -47,5 +49,10 @@ public class customSubTask implements ICustomTask {
             }
         });
         return ret.writeObject();
+    }
+
+    public String toString(){
+        String p2 = parameters.toString();
+        return type +p2;
     }
 }
