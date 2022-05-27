@@ -36,16 +36,11 @@ public class AltoJsonWarning extends JDialog {
         l_warning_text.setVisible(true);
         setSize(450, 200);
         setLocationRelativeTo(null);
-        setVisible(true);
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        setVisible(true);
     }
 
     private void onOK() {

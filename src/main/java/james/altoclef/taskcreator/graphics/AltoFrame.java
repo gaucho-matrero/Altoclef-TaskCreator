@@ -102,8 +102,11 @@ public class AltoFrame extends JFrame {
                  */
                 JSONArray array_on_file = file.getJSONArray("custom-tasks");
                 NewTaskFrame nTF = new NewTaskFrame();
-                array_on_file.put(nTF.write());
-                refreshTable();
+                try{array_on_file.put(nTF.write());
+                    refreshTable();
+                }catch (Exception ignored){
+                    //we don't do anything if the table was not modified
+                }
             }
         });
         btn_edit_task.addActionListener(new ActionListener() {
