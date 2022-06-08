@@ -397,7 +397,7 @@ public class AltoFrame extends JFrame {
         l_v_label = new JLabel();
         l_v_label.setBackground(new Color(-9346490));
         l_v_label.setForeground(new Color(-4500880));
-        l_v_label.setText("v1.0.1");
+        l_v_label.setText("v1.0.2");
         mainPanel.add(l_v_label, new GridConstraints(16, 0, 1, 1,
                 GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
