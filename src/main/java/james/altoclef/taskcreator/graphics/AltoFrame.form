@@ -43,7 +43,7 @@
         <properties>
           <background color="-9346490"/>
           <foreground color="-4500880"/>
-          <text value="v1.0.1"/>
+          <text value="v1.0.2"/>
         </properties>
       </component>
       <component id="3bec4" class="javax.swing.JButton" binding="btn_newTask">
