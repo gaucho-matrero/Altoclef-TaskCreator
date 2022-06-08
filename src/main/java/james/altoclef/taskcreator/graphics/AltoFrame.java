@@ -101,7 +101,13 @@ public class AltoFrame extends JFrame {
                     file.getJSONarray[0] gets the custom tasks data
                     we add the results of new
                  */
-                JSONArray array_on_file = file.getJSONArray("custom-tasks");
+                JSONArray array_on_file = new JSONArray();
+                try {
+                    array_on_file = file.getJSONArray("custom-tasks");
+                } catch (JSONException ignored) {
+                    file.put("prefix", tf_prefix.getText());
+                    file.put("custom-tasks", array_on_file);
+                }
                 NewTaskFrame nTF = new NewTaskFrame();
                 try {
                     array_on_file.put(nTF.write());
@@ -391,8 +397,8 @@ public class AltoFrame extends JFrame {
         l_v_label = new JLabel();
         l_v_label.setBackground(new Color(-9346490));
         l_v_label.setForeground(new Color(-4500880));
-        l_v_label.setText("v1.0");
-        mainPanel.add(l_v_label, new GridConstraints(16, 0, 1, 3,
+        l_v_label.setText("v1.0.1");
+        mainPanel.add(l_v_label, new GridConstraints(16, 0, 1, 1,
                 GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
