@@ -45,7 +45,7 @@ public class customSubTask implements ICustomTask {
 
             @Override
             public Object getValue() {
-                return parameters;
+                return parameters.toString();
             }
         });
         return ret.writeObject();
