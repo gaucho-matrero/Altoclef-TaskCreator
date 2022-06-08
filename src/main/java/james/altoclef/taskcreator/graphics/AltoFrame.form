@@ -23,7 +23,9 @@
           </grid>
         </constraints>
         <properties>
-          <text value="custom2"/>
+          <editable value="false"/>
+          <enabled value="false"/>
+          <text value="custom"/>
         </properties>
       </component>
       <component id="f0e43" class="javax.swing.JTable" binding="table_tasks">
