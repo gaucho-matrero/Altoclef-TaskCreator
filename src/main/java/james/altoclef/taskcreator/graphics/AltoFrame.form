@@ -41,7 +41,7 @@
         <properties>
           <background color="-9346490"/>
           <foreground color="-4500880"/>
-          <text value="v0.6"/>
+          <text value="v1.0"/>
         </properties>
       </component>
       <component id="3bec4" class="javax.swing.JButton" binding="btn_newTask">
@@ -119,14 +119,6 @@
         </constraints>
         <properties>
           <text value="Create Shared String"/>
-        </properties>
-      </component>
-      <component id="9834" class="javax.swing.JButton" binding="btn_edit_task">
-        <constraints>
-          <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Edit Task"/>
         </properties>
       </component>
     </children>
