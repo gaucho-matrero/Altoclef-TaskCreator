@@ -34,6 +34,7 @@ public class NewTaskFrame extends JDialog {
     private JTextField tf_desc;
     private JButton btn_clearAll;
     private JButton btn_copy;
+    private JLabel l_task_preview;
 
     private final writeableTask taskToWrite = new writeableTask();
     private final List<customSubTask> subTaskList;
@@ -323,7 +324,7 @@ public class NewTaskFrame extends JDialog {
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
                 -1), null, 0, false));
         btn_add_sub_task = new JButton();
-        btn_add_sub_task.setText("+");
+        btn_add_sub_task.setText("add parameters");
         main_panel.add(btn_add_sub_task, new GridConstraints(3, 2, 1, 3,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -342,6 +343,12 @@ public class NewTaskFrame extends JDialog {
         main_panel.add(btn_copy, new GridConstraints(4, 2, 1, 1,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 25), null, 0, false));
+        l_task_preview = new JLabel();
+        l_task_preview.setText("Tasks");
+        main_panel.add(l_task_preview, new GridConstraints(1, 5, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

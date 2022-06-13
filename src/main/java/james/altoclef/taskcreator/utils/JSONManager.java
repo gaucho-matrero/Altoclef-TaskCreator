@@ -37,7 +37,7 @@ public class JSONManager {
 
     public String[] getTaskNames() throws JSONException{
         try {
-            JSONArray tasks = file.getJSONArray("custom-tasks");
+            JSONArray tasks = file.getJSONArray("customTasks");
             String[] res = new String[tasks.length()];
             for (int i = 0; i < res.length; i++) {
                 JSONObject obj = tasks.getJSONObject(i);
