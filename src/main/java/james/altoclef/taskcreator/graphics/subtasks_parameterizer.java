@@ -26,6 +26,7 @@ public class subtasks_parameterizer extends JDialog {
     private JTextField tf_x;
     private JTextField tf_y;
     private JTextField tf_z;
+    private JLabel l_action_preview;
     private int editing = -1;
     private final List<Object> params;
     private final String command;
@@ -60,10 +61,9 @@ public class subtasks_parameterizer extends JDialog {
     }
 
     private void initComponents() {
-        //TODO create action listeners. See New Task Frame
-
         {
             switch (command) {
+                // new subtasks registered here
                 case "get" -> loadUI_items();
                 case "goto" -> loadUI_coords();
                 default -> loadUI();
@@ -91,10 +91,7 @@ public class subtasks_parameterizer extends JDialog {
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    /*
-                    TODO
-                        Add other tasks here
-                     */
+                    // This is where we add new kinds of subtasks
                     if (command.equals("get")) {
                         if (editing != -1) {
                             params.remove(editing);
@@ -250,67 +247,73 @@ public class subtasks_parameterizer extends JDialog {
      */
     private void $$$setupUI$$$() {
         main_panel = new JPanel();
-        main_panel.setLayout(new GridLayoutManager(6, 7, new Insets(4, 4, 4,
+        main_panel.setLayout(new GridLayoutManager(7, 7, new Insets(4, 4, 4,
                 4), -1, -1));
         item_selector = new JComboBox();
-        main_panel.add(item_selector, new GridConstraints(1, 0, 1, 6,
+        main_panel.add(item_selector, new GridConstraints(2, 0, 1, 6,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         l_type = new JLabel();
         l_type.setText("Type");
-        main_panel.add(l_type, new GridConstraints(0, 0, 1, 6,
+        main_panel.add(l_type, new GridConstraints(1, 0, 1, 6,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         action_table = new JTable();
-        main_panel.add(action_table, new GridConstraints(0, 6, 6, 1,
+        main_panel.add(action_table, new GridConstraints(1, 6, 6, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
                 , 50), null, 0, false));
         btn_add = new JButton();
         btn_add.setText("add");
-        main_panel.add(btn_add, new GridConstraints(5, 0, 1, 1,
+        main_panel.add(btn_add, new GridConstraints(6, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_done = new JButton();
         btn_done.setText("Done");
-        main_panel.add(btn_done, new GridConstraints(5, 5, 1, 1,
+        main_panel.add(btn_done, new GridConstraints(6, 5, 1, 1,
                 GridConstraints.ANCHOR_CENTER,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         combo_itemCount_or_dimension = new JComboBox();
-        main_panel.add(combo_itemCount_or_dimension, new GridConstraints(2, 0
+        main_panel.add(combo_itemCount_or_dimension, new GridConstraints(3, 0
                 , 1, 6, GridConstraints.ANCHOR_WEST,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(80, -1)
                 , null, 0, false));
         tf_target = new JTextField();
-        main_panel.add(tf_target, new GridConstraints(4, 0, 1, 6,
+        main_panel.add(tf_target, new GridConstraints(5, 0, 1, 6,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
                 -1), null, 0, false));
         tf_x = new JTextField();
-        main_panel.add(tf_x, new GridConstraints(3, 0, 1, 2,
+        main_panel.add(tf_x, new GridConstraints(4, 0, 1, 2,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(70, -1)
                 , null, 1, false));
         tf_y = new JTextField();
-        main_panel.add(tf_y, new GridConstraints(3, 2, 1, 1,
+        main_panel.add(tf_y, new GridConstraints(4, 2, 1, 1,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(70, -1)
                 , null, 0, false));
         tf_z = new JTextField();
-        main_panel.add(tf_z, new GridConstraints(3, 3, 1, 3,
+        main_panel.add(tf_z, new GridConstraints(4, 3, 1, 3,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(70, -1)
                 , null, 0, false));
+        l_action_preview = new JLabel();
+        l_action_preview.setText("Actions");
+        main_panel.add(l_action_preview, new GridConstraints(0, 6, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

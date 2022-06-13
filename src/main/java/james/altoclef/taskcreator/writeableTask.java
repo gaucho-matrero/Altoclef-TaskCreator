@@ -21,6 +21,7 @@ public class writeableTask implements IWritableTask {
     public writeableTask(List<Key> writeableItems){
         this.writeableItems = writeableItems;
     }
+
     @Override
     public JSONObject writeObject() {
         JSONObject obj = new JSONObject();

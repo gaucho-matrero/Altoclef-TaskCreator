@@ -10,8 +10,8 @@ import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -36,6 +36,9 @@ public class AltoFrame extends JFrame {
     private JLabel l_v_label;
     private JLabel l_task_description_header;
     private JLabel l_task_description;
+    private JLabel l_release_title;
+    private JLabel l_space;
+    private JLabel l_custom_preview;
     private JButton btn_edit_task;
     private JSONObject file;
     private JSONManager manager;
@@ -103,10 +106,10 @@ public class AltoFrame extends JFrame {
                  */
                 JSONArray array_on_file = new JSONArray();
                 try {
-                    array_on_file = file.getJSONArray("custom-tasks");
+                    array_on_file = file.getJSONArray("customTasks");
                 } catch (JSONException ignored) {
                     file.put("prefix", tf_prefix.getText());
-                    file.put("custom-tasks", array_on_file);
+                    file.put("customTasks", array_on_file);
                 }
                 NewTaskFrame nTF = new NewTaskFrame();
                 try {
@@ -128,7 +131,7 @@ public class AltoFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = table_tasks.getSelectedRow();
-                JSONArray arg = file.getJSONArray("custom-tasks");
+                JSONArray arg = file.getJSONArray("customTasks");
                 arg.remove(index);
                 refreshTable();
                 inform(true);
@@ -171,7 +174,7 @@ public class AltoFrame extends JFrame {
                 try {
                     String newFilename = fd.getFile().endsWith(".json") ? fd.getFile() : fd.getFile() + ".json";
                     JSONObject toWrite = file;
-                    FileWriter filew = new FileWriter(newFilename);
+                    FileWriter filew = new FileWriter(fd.getDirectory() + newFilename);
                     toWrite.write(filew);
                     filew.close();
                     manager = new JSONManager(newFilename);
@@ -371,11 +374,13 @@ public class AltoFrame extends JFrame {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(17, 5, new Insets(0, 8, 4,
+        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(0, 8, 4,
                 0), -1, -1));
+        mainPanel.setForeground(new Color(-1));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         l_prefix = new JLabel();
         l_prefix.setText("Prefix");
-        mainPanel.add(l_prefix, new GridConstraints(1, 0, 2, 3,
+        mainPanel.add(l_prefix, new GridConstraints(2, 0, 2, 3,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
@@ -383,13 +388,13 @@ public class AltoFrame extends JFrame {
         tf_prefix.setEditable(false);
         tf_prefix.setEnabled(false);
         tf_prefix.setText("custom");
-        mainPanel.add(tf_prefix, new GridConstraints(3, 0, 3, 2,
+        mainPanel.add(tf_prefix, new GridConstraints(4, 0, 3, 2,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
                 -1), null, 1, false));
         table_tasks = new JTable();
-        mainPanel.add(table_tasks, new GridConstraints(1, 3, 15, 1,
+        mainPanel.add(table_tasks, new GridConstraints(2, 3, 15, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_WANT_GROW,
                 GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
@@ -397,42 +402,42 @@ public class AltoFrame extends JFrame {
         l_v_label = new JLabel();
         l_v_label.setBackground(new Color(-9346490));
         l_v_label.setForeground(new Color(-4500880));
-        l_v_label.setText("v1.0.2");
-        mainPanel.add(l_v_label, new GridConstraints(16, 0, 1, 1,
+        l_v_label.setText("v1.1");
+        mainPanel.add(l_v_label, new GridConstraints(17, 0, 1, 1,
                 GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_newTask = new JButton();
         btn_newTask.setHideActionText(false);
         btn_newTask.setText("New Task");
-        mainPanel.add(btn_newTask, new GridConstraints(10, 0, 1, 2,
+        mainPanel.add(btn_newTask, new GridConstraints(11, 0, 1, 2,
                 GridConstraints.ANCHOR_CENTER,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_delTask = new JButton();
         btn_delTask.setText("Delete Task");
-        mainPanel.add(btn_delTask, new GridConstraints(12, 0, 1, 2,
+        mainPanel.add(btn_delTask, new GridConstraints(13, 0, 1, 2,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_Compile = new JButton();
         btn_Compile.setText("Compile");
-        mainPanel.add(btn_Compile, new GridConstraints(16, 3, 1, 1,
+        mainPanel.add(btn_Compile, new GridConstraints(17, 3, 1, 1,
                 GridConstraints.ANCHOR_CENTER,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPanel.add(spacer1, new GridConstraints(15, 0, 1, 1,
+        mainPanel.add(spacer1, new GridConstraints(16, 0, 1, 1,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
                 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
                 false));
         l_shareableString = new JLabel();
         l_shareableString.setText("");
-        mainPanel.add(l_shareableString, new GridConstraints(15, 1, 1, 1,
+        mainPanel.add(l_shareableString, new GridConstraints(16, 1, 1, 1,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        mainPanel.add(spacer2, new GridConstraints(10, 4, 6, 1,
+        mainPanel.add(spacer2, new GridConstraints(11, 4, 6, 1,
                 GridConstraints.ANCHOR_CENTER,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0,
@@ -440,28 +445,49 @@ public class AltoFrame extends JFrame {
         l_task_description_header = new JLabel();
         l_task_description_header.setEnabled(true);
         l_task_description_header.setText("");
-        mainPanel.add(l_task_description_header, new GridConstraints(6, 4, 3,
+        mainPanel.add(l_task_description_header, new GridConstraints(7, 4, 3,
                 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         l_task_description = new JLabel();
         l_task_description.setText("");
-        mainPanel.add(l_task_description, new GridConstraints(9, 4, 1, 1,
+        mainPanel.add(l_task_description, new GridConstraints(10, 4, 1, 1,
                 GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(8, 8, 0, 0),
+        panel1.setLayout(new GridLayoutManager(2, 1, new Insets(8, 8, 0, 0),
                 -1, -1));
-        mainPanel.add(panel1, new GridConstraints(0, 3, 1, 1,
+        panel1.setBackground(new Color(-12032913));
+        mainPanel.add(panel1, new GridConstraints(0, 0, 1, 5,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        l_release_title = new JLabel();
+        l_release_title.setForeground(new Color(-1));
+        l_release_title.setText("Barebones Release");
+        l_release_title.setVerticalAlignment(0);
+        panel1.add(l_release_title, new GridConstraints(0, 0, 1, 1,
+                GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_space = new JLabel();
+        l_space.setText("");
+        panel1.add(l_space, new GridConstraints(1, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btn_genShareString = new JButton();
         btn_genShareString.setText("Create Shared String");
-        mainPanel.add(btn_genShareString, new GridConstraints(13, 0, 1, 2,
+        mainPanel.add(btn_genShareString, new GridConstraints(14, 0, 1, 2,
                 GridConstraints.ANCHOR_CENTER,
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_custom_preview = new JLabel();
+        l_custom_preview.setText("Custom Tasks");
+        mainPanel.add(l_custom_preview, new GridConstraints(1, 3, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
