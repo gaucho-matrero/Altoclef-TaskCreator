@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="18" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="8" bottom="4" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="658" height="499"/>
+      <xy x="20" y="20" width="658" height="512"/>
     </constraints>
     <properties>
       <foreground color="-1"/>
@@ -154,6 +154,14 @@
         </constraints>
         <properties>
           <text value="Custom Tasks"/>
+        </properties>
+      </component>
+      <component id="d1162" class="javax.swing.JButton" binding="btn_edit">
+        <constraints>
+          <grid row="12" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Edit"/>
         </properties>
       </component>
     </children>
