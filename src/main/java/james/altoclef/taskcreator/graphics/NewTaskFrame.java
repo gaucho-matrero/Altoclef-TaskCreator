@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class NewTaskFrame extends JDialog {
@@ -32,6 +33,8 @@ public class NewTaskFrame extends JDialog {
     private final writeableTask taskToWrite = new writeableTask();
     private JSONObject input;
     private final List<customSubTask> subTaskList;
+    private boolean dispose;
+    private List<customSubTask> original;
 
     public NewTaskFrame() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -42,6 +45,10 @@ public class NewTaskFrame extends JDialog {
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btn_save);
         subTaskList = new ArrayList<customSubTask>();
+        dispose=true;
+        original = new ArrayList<>(subTaskList);
+
+        //nothing below this line
         initComponents();
         setVisible(true);//must always be last
 
@@ -55,9 +62,12 @@ public class NewTaskFrame extends JDialog {
         getRootPane().setDefaultButton(btn_save);
         subTaskList = new ArrayList<customSubTask>();
         input=arg;
+        dispose = true;
+        original = new ArrayList<>(subTaskList);
+
+        //nothing below this line
         initComponents();
         setVisible(true);//must always be last
-
     }
 
     private void initComponents() {
@@ -118,6 +128,7 @@ public class NewTaskFrame extends JDialog {
         btn_copy.addActionListener(e -> {
             if (subtask_table.getSelectedRow() != -1) {
                 subTaskList.add(subTaskList.get(subtask_table.getSelectedRow()));
+                btn_save.setEnabled(true);
                 refresh();
             }
         });
@@ -130,6 +141,7 @@ public class NewTaskFrame extends JDialog {
             refresh();
         });
         btn_save.addActionListener(e -> {
+            dispose=false;
             dispose();
         });
         btn_Cancel.addActionListener(e -> {
@@ -137,24 +149,27 @@ public class NewTaskFrame extends JDialog {
             dispose();
         });
         if(input!=null){
-            tf_name.setText((String) input.get("name"));
-            tf_desc.setText(input.getString("description"));
-            //TODO add to the arraylist
-            JSONArray arToIterate = input.getJSONArray("tasks");
-            for(int i=0; i<arToIterate.length();i++){
-                String type = arToIterate.getJSONObject(i).getString("command");
-                List<Object> tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList();
-                Object[][] items = new Object[tos.size()][];
-                //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
-                for(int j = 0; j<tos.size();j++){
-                    items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
-                }
-                //TODO make object 2D array
-                subTaskList.add(new customSubTask(type,items));
-            }
-
+            loadInput();
         }
         refresh();
+    }
+
+    private void loadInput() {
+        tf_name.setText((String) input.get("name"));
+        tf_desc.setText(input.getString("description"));
+        JSONArray arToIterate = input.getJSONArray("tasks");
+        for(int i=0; i<arToIterate.length();i++){
+            String type = arToIterate.getJSONObject(i).getString("command");
+            List<Object> tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList(); //TODO This fails if you edit it twice. Fix it
+            Object[][] items = new Object[tos.size()][];
+            //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
+            for(int j = 0; j< tos.size();j++){
+                items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+            }
+            subTaskList.add(new customSubTask(type,items));
+        }
+        original=new ArrayList<>(subTaskList);
+
     }
 
     private void openSubtaskMenu() {
@@ -217,7 +232,7 @@ public class NewTaskFrame extends JDialog {
         btn_Remove.setEnabled(false);
         btn_copy.setEnabled(false);
         btn_clearAll.setEnabled(subTaskList.size() > 0);
-
+        btn_save.setEnabled(!subTaskList.equals(original));
         //TODO disable save button in bad instances
 
     }
@@ -228,60 +243,63 @@ public class NewTaskFrame extends JDialog {
      * @return the compiled components
      */
     public JSONObject write() {
-        if (subTaskList.size() == 0) {
-            throw new NullPointerException("Saved task contains no items");
-        }
-        if (tf_name.getText().isBlank() || tf_name.getText().isEmpty() || tf_name.getText().contains(" ")) { // no w h i t e s p a c e
-            throw new NullPointerException("Saved task contains invalid name");
-        }
-        if (tf_desc.getText().isBlank() || tf_desc.getText().isEmpty()) {
-            throw new NullPointerException("Saved task contains invalid description");
-        }
+        if (!dispose) {
+            if (subTaskList.size() == 0) {
+                throw new NullPointerException("Saved task contains no items");
+            }
+            if (tf_name.getText().isBlank() || tf_name.getText().isEmpty() || tf_name.getText().contains(" ")) { // no w h i t e s p a c e
+                throw new NullPointerException("Saved task contains invalid name");
+            }
+            if (tf_desc.getText().isBlank() || tf_desc.getText().isEmpty()) {
+                throw new NullPointerException("Saved task contains invalid description");
+            }
 
 //TODO Check for integers
 
-        //name
-        taskToWrite.add(new Key() {
-            @Override
-            public String getKey() {
-                return "name";
-            }
+            //name
+            taskToWrite.add(new Key() {
+                @Override
+                public String getKey() {
+                    return "name";
+                }
 
-            @Override
-            public Object getValue() {
-                return tf_name.getText();
-            }
-        });
-        //description
-        taskToWrite.add(new Key() {
-            @Override
-            public String getKey() {
-                return "description";
-            }
+                @Override
+                public Object getValue() {
+                    return tf_name.getText();
+                }
+            });
+            //description
+            taskToWrite.add(new Key() {
+                @Override
+                public String getKey() {
+                    return "description";
+                }
 
-            @Override
-            public Object getValue() {
-                return tf_desc.getText();
+                @Override
+                public Object getValue() {
+                    return tf_desc.getText();
+                }
+            });
+            //tasks
+            JSONArray subTasks = new JSONArray();
+            for (customSubTask t : subTaskList) {
+                subTasks.put(t.build());
             }
-        });
-        //tasks
-        JSONArray subTasks = new JSONArray();
-        for (customSubTask t : subTaskList) {
-            subTasks.put(t.build());
+            taskToWrite.add(new Key() {
+                @Override
+                public String getKey() {
+                    return "tasks";
+                }
+
+                @Override
+                public Object getValue() {
+                    return subTasks;
+                }
+            });
+            return taskToWrite.writeObject();
+
+        }else{
+            return null; //do nothing
         }
-        taskToWrite.add(new Key() {
-            @Override
-            public String getKey() {
-                return "tasks";
-            }
-
-            @Override
-            public Object getValue() {
-                return subTasks;
-            }
-        });
-        return taskToWrite.writeObject();
-
     }
-
 }
