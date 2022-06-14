@@ -143,7 +143,14 @@ public class NewTaskFrame extends JDialog {
             JSONArray arToIterate = input.getJSONArray("tasks");
             for(int i=0; i<arToIterate.length();i++){
                 String type = arToIterate.getJSONObject(i).getString("command");
-                subTaskList.add(new customSubTask(type,arToIterate.getJSONObject(i).getJSONArray("parameters").toList().toArray()));
+                List<Object> tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList();
+                Object[][] items = new Object[tos.size()][];
+                //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
+                for(int j = 0; j<tos.size();j++){
+                    items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+                }
+                //TODO make object 2D array
+                subTaskList.add(new customSubTask(type,items));
             }
 
         }
