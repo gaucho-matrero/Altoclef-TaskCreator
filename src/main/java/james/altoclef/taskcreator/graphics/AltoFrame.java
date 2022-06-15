@@ -131,7 +131,10 @@ public class AltoFrame extends JFrame {
             NewTaskFrame nTF = new NewTaskFrame(file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()));
             try {
                 array_on_file.remove(table_tasks.getSelectedRow());
-                array_on_file.put(nTF.write());
+                JSONObject toAdd = nTF.write();
+                if(toAdd!=null){
+                    array_on_file.put(toAdd);
+                }
                 inform(true);
                 refreshTable();
             } catch (Exception ignored) {

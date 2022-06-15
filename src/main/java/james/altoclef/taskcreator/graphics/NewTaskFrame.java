@@ -11,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class NewTaskFrame extends JDialog {
@@ -62,7 +61,7 @@ public class NewTaskFrame extends JDialog {
         getRootPane().setDefaultButton(btn_save);
         subTaskList = new ArrayList<customSubTask>();
         input=arg;
-        dispose = true;
+        dispose = false;
         original = new ArrayList<>(subTaskList);
 
         //nothing below this line
@@ -160,13 +159,30 @@ public class NewTaskFrame extends JDialog {
         JSONArray arToIterate = input.getJSONArray("tasks");
         for(int i=0; i<arToIterate.length();i++){
             String type = arToIterate.getJSONObject(i).getString("command");
-            List<Object> tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList(); //TODO This fails if you edit it twice. Fix it
-            Object[][] items = new Object[tos.size()][];
-            //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
-            for(int j = 0; j< tos.size();j++){
-                items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+            List<Object> tos;
+            try {
+                 tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList(); //TODO This fails if you edit it twice. Fix it
+                Object[][] items = new Object[tos.size()][];
+                //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
+                for(int j = 0; j< tos.size();j++){
+                    items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+                }
+                subTaskList.add(new customSubTask(type,items));
+            }catch(Exception e){
+                tos = new ArrayList<>();
+                for(int j=0; j< arToIterate.length();j++){
+                   Object[] parameters = (Object[]) arToIterate.getJSONObject(j).get("parameters");
+                    for (Object parameter : parameters) {
+                        tos.add((Arrays.asList((Object[]) parameter)));
+                    }
+                    Object[][] items = new Object[tos.size()][];
+                    for(int k=0; k<items.length; k++){
+                        items[k]=(ArrayList<Object>)tos.get(k).toArray(); //TODO if only
+                    }
+                    subTaskList.add(new customSubTask(type,items));
+                } //TODO tos has gone to far and nabbed everything. It needs to slow down and do one command at a time.
+
             }
-            subTaskList.add(new customSubTask(type,items));
         }
         original=new ArrayList<>(subTaskList);
 
@@ -233,7 +249,6 @@ public class NewTaskFrame extends JDialog {
         btn_copy.setEnabled(false);
         btn_clearAll.setEnabled(subTaskList.size() > 0);
         btn_save.setEnabled(!subTaskList.equals(original));
-        //TODO disable save button in bad instances
 
     }
 
