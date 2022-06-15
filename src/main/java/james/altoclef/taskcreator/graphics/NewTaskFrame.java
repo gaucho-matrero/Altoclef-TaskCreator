@@ -176,9 +176,7 @@ public class NewTaskFrame extends JDialog {
                         tos.add((Arrays.asList((Object[]) parameter)));
                     }
                     Object[][] items = new Object[tos.size()][];
-                    for(int k=0; k<items.length; k++){
-                        items[k]=(ArrayList<Object>)tos.get(k).toArray(); //TODO if only
-                    }
+
                     subTaskList.add(new customSubTask(type,items));
                 } //TODO tos has gone to far and nabbed everything. It needs to slow down and do one command at a time.
 
