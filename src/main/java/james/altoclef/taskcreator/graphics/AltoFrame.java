@@ -139,6 +139,8 @@ public class AltoFrame extends JFrame {
                 JSONObject toAdd = nTF.write();
                 if(toAdd!=null){
                     array_on_file.put(toAdd);
+                }else{
+                    AltoJsonWarning warnUserOfBadAction = new AltoJsonWarning("Bad Action","you cannot save a custom task with no sub actions");
                 }
                 inform(true);
                 refreshTable();
@@ -169,8 +171,11 @@ public class AltoFrame extends JFrame {
                 }
                 NewTaskFrame nTF = new NewTaskFrame();
                 try {
-                    array_on_file.put(nTF.write());
-                    inform(true);
+                    JSONObject toAdd = nTF.write();
+                    if(toAdd!=null){
+                        array_on_file.put(toAdd);
+                        inform(true);
+                    }
                     refreshTable();
                 } catch (Exception ignored) {
                     //we don't do anything if the table was not modified

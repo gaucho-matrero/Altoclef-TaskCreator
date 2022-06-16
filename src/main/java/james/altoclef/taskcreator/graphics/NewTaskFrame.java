@@ -76,6 +76,21 @@ public class NewTaskFrame extends JDialog {
         commandBox.addItem("goto");
         commandBox.addItem("punk");
 
+        addWindowListener(new WindowAdapter() {
+            /**
+             * Invoked when a window is in the process of
+             * being closed. The close operation can be
+             * overridden at this point.
+             *
+             * @param e
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                cancel();
+                super.windowClosing(e);
+            }
+        });
+
         subtask_table.addMouseListener(new MouseAdapter() {
             /**
              * {@inheritDoc}
@@ -145,16 +160,21 @@ public class NewTaskFrame extends JDialog {
             dispose();
         });
         btn_Cancel.addActionListener(e -> {
-            if(input==null) {
-                subTaskList.clear();
-                Collections.addAll(original);
-            }
-            dispose();
+            cancel();
         });
         if(input!=null){
             loadInput();
         }
         refresh();
+    }
+
+    private void cancel() {
+        if(input != null){
+            dispose =false;
+        }
+        subTaskList.clear();
+        subTaskList.addAll(original);
+        dispose();
     }
 
     private void loadInput() {
@@ -244,14 +264,13 @@ public class NewTaskFrame extends JDialog {
             }
             subtask_table.setModel(model);
         } catch (Exception ignored) {
-            System.out.println(ignored);
         }
         //refresh buttons
         btn_add_sub_task.setText("add parameters");
         btn_Remove.setEnabled(false);
         btn_copy.setEnabled(false);
         btn_clearAll.setEnabled(subTaskList.size() > 0);
-        btn_save.setEnabled(!subTaskList.equals(original));
+        btn_save.setEnabled(!subTaskList.equals(original) && subTaskList.size()!=0);
         //TODO Update on title & description change
         //  Only enable if there is a difference AND the table contains at least one item.
     }
