@@ -81,6 +81,11 @@ public class AltoFrame extends JFrame {
         } catch (Exception e) {
             manager = new JSONManager();
             displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
+            file=manager.getFile();
+            setTitle("Altoclef-TaskCreator -- new file");
+            refreshTable();
+            l_shareableString.setText("");
+            inform(true);
         } //load default file
 
         refreshTable();

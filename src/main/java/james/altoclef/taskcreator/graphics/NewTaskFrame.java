@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class NewTaskFrame extends JDialog {
@@ -34,7 +35,7 @@ public class NewTaskFrame extends JDialog {
     private final List<customSubTask> subTaskList;
     private boolean dispose;
     private List<customSubTask> original;
-
+    //TODO make the cancel button not delete the task
     public NewTaskFrame() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setModal(true);
@@ -144,7 +145,10 @@ public class NewTaskFrame extends JDialog {
             dispose();
         });
         btn_Cancel.addActionListener(e -> {
-            subTaskList.clear();
+            if(input==null) {
+                subTaskList.clear();
+                Collections.addAll(original);
+            }
             dispose();
         });
         if(input!=null){
@@ -170,16 +174,17 @@ public class NewTaskFrame extends JDialog {
                 subTaskList.add(new customSubTask(type,items));
             }catch(Exception e){
                 tos = new ArrayList<>();
-                for(int j=0; j< arToIterate.length();j++){
-                   Object[] parameters = (Object[]) arToIterate.getJSONObject(j).get("parameters");
-                    for (Object parameter : parameters) {
-                        tos.add((Arrays.asList((Object[]) parameter)));
-                    }
-                    Object[][] items = new Object[tos.size()][];
-
-                    subTaskList.add(new customSubTask(type,items));
-                } //TODO tos has gone to far and nabbed everything. It needs to slow down and do one command at a time.
-
+                Object[] parameters = (Object[]) arToIterate.getJSONObject(i).get("parameters");
+                for (Object parameter : parameters) {
+                    tos.add((Arrays.asList((Object[]) parameter)));
+                }
+                Object[][] items = new Object[tos.size()][];
+                //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
+                for(int k = 0; k< tos.size();k++){
+                    items[k] = (tos.get(k).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+                }
+                subTaskList.add(new customSubTask(type,items));
+                tos.clear();
             }
         }
         original=new ArrayList<>(subTaskList);
@@ -247,7 +252,8 @@ public class NewTaskFrame extends JDialog {
         btn_copy.setEnabled(false);
         btn_clearAll.setEnabled(subTaskList.size() > 0);
         btn_save.setEnabled(!subTaskList.equals(original));
-
+        //TODO Update on title & description change
+        //  Only enable if there is a difference AND the table contains at least one item.
     }
 
     /**
