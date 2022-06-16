@@ -1,5 +1,8 @@
 package james.altoclef.taskcreator.graphics;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import james.altoclef.taskcreator.customSubTask;
 import james.altoclef.taskcreator.interfaces.Key;
 import james.altoclef.taskcreator.writeableTask;
@@ -8,6 +11,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +39,7 @@ public class NewTaskFrame extends JDialog {
     private final List<customSubTask> subTaskList;
     private boolean dispose;
     private List<customSubTask> original;
+
     //TODO make the cancel button not delete the task
     public NewTaskFrame() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -45,7 +50,7 @@ public class NewTaskFrame extends JDialog {
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btn_save);
         subTaskList = new ArrayList<customSubTask>();
-        dispose=true;
+        dispose = true;
         original = new ArrayList<>(subTaskList);
 
         //nothing below this line
@@ -53,6 +58,7 @@ public class NewTaskFrame extends JDialog {
         setVisible(true);//must always be last
 
     }
+
     public NewTaskFrame(JSONObject arg) {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setModal(true);
@@ -61,7 +67,7 @@ public class NewTaskFrame extends JDialog {
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(btn_save);
         subTaskList = new ArrayList<customSubTask>();
-        input=arg;
+        input = arg;
         dispose = false;
         original = new ArrayList<>(subTaskList);
 
@@ -124,7 +130,7 @@ public class NewTaskFrame extends JDialog {
             @Override
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
-                if(e.getKeyChar()=='\u001B'){
+                if (e.getKeyChar() == '\u001B') {
                     subtask_table.clearSelection();
                     btn_add_sub_task.setText("add parameters");
                 }
@@ -156,21 +162,21 @@ public class NewTaskFrame extends JDialog {
             refresh();
         });
         btn_save.addActionListener(e -> {
-            dispose=false;
+            dispose = false;
             dispose();
         });
         btn_Cancel.addActionListener(e -> {
             cancel();
         });
-        if(input!=null){
+        if (input != null) {
             loadInput();
         }
         refresh();
     }
 
     private void cancel() {
-        if(input != null){
-            dispose =false;
+        if (input != null) {
+            dispose = false;
         }
         subTaskList.clear();
         subTaskList.addAll(original);
@@ -181,18 +187,18 @@ public class NewTaskFrame extends JDialog {
         tf_name.setText((String) input.get("name"));
         tf_desc.setText(input.getString("description"));
         JSONArray arToIterate = input.getJSONArray("tasks");
-        for(int i=0; i<arToIterate.length();i++){
+        for (int i = 0; i < arToIterate.length(); i++) {
             String type = arToIterate.getJSONObject(i).getString("command");
             List<Object> tos;
             try {
-                 tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList(); //TODO This fails if you edit it twice. Fix it
+                tos = arToIterate.getJSONObject(i).getJSONArray("parameters").toList(); //TODO This fails if you edit it twice. Fix it
                 Object[][] items = new Object[tos.size()][];
                 //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
-                for(int j = 0; j< tos.size();j++){
-                    items[j] = (tos.get(j).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+                for (int j = 0; j < tos.size(); j++) {
+                    items[j] = (tos.get(j).toString()).replaceAll("\\[", "").replaceAll("]", "").split(",");
                 }
-                subTaskList.add(new customSubTask(type,items));
-            }catch(Exception e){
+                subTaskList.add(new customSubTask(type, items));
+            } catch (Exception e) {
                 tos = new ArrayList<>();
                 Object[] parameters = (Object[]) arToIterate.getJSONObject(i).get("parameters");
                 for (Object parameter : parameters) {
@@ -200,14 +206,14 @@ public class NewTaskFrame extends JDialog {
                 }
                 Object[][] items = new Object[tos.size()][];
                 //Object[number of subtasks][parameter size of subtask (get is 2, goto is 3, punk is 1, etc]
-                for(int k = 0; k< tos.size();k++){
-                    items[k] = (tos.get(k).toString()).replaceAll("\\[","").replaceAll("]","").split(",");
+                for (int k = 0; k < tos.size(); k++) {
+                    items[k] = (tos.get(k).toString()).replaceAll("\\[", "").replaceAll("]", "").split(",");
                 }
-                subTaskList.add(new customSubTask(type,items));
+                subTaskList.add(new customSubTask(type, items));
                 tos.clear();
             }
         }
-        original=new ArrayList<>(subTaskList);
+        original = new ArrayList<>(subTaskList);
 
     }
 
@@ -270,9 +276,8 @@ public class NewTaskFrame extends JDialog {
         btn_Remove.setEnabled(false);
         btn_copy.setEnabled(false);
         btn_clearAll.setEnabled(subTaskList.size() > 0);
-        btn_save.setEnabled(!subTaskList.equals(original) && subTaskList.size()!=0);
+        btn_save.setEnabled(!subTaskList.equals(original) && subTaskList.size() != 0);
         //TODO Update on title & description change
-        //  Only enable if there is a difference AND the table contains at least one item.
     }
 
     /**
@@ -336,8 +341,125 @@ public class NewTaskFrame extends JDialog {
             });
             return taskToWrite.writeObject();
 
-        }else{
+        } else {
             return null; //do nothing
         }
+    }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT
+     * edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        main_panel = new JPanel();
+        main_panel.setLayout(new GridLayoutManager(9, 6, new Insets(4, 4, 4,
+                4), -1, -1));
+        subtask_table = new JTable();
+        main_panel.add(subtask_table, new GridConstraints(2, 5, 7, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
+                , 50), null, 0, false));
+        l_command = new JLabel();
+        l_command.setText("Command");
+        main_panel.add(l_command, new GridConstraints(2, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        commandBox = new JComboBox();
+        main_panel.add(commandBox, new GridConstraints(3, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, new Dimension(5, 5),
+                new Dimension(80, 20), new Dimension(100, 20), 1, false));
+        l_param = new JLabel();
+        l_param.setText("parameters");
+        main_panel.add(l_param, new GridConstraints(2, 1, 1, 3,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_save = new JButton();
+        btn_save.setText("Save");
+        main_panel.add(btn_save, new GridConstraints(7, 0, 1, 5,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        main_panel.add(spacer1, new GridConstraints(6, 0, 1, 4,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
+                1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
+                false));
+        btn_Cancel = new JButton();
+        btn_Cancel.setText("Cancel");
+        main_panel.add(btn_Cancel, new GridConstraints(8, 0, 1, 5,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("Name");
+        main_panel.add(label1, new GridConstraints(0, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        tf_name = new JTextField();
+        main_panel.add(tf_name, new GridConstraints(0, 1, 1, 2,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
+                -1), null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Description");
+        main_panel.add(label2, new GridConstraints(1, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        tf_desc = new JTextField();
+        main_panel.add(tf_desc, new GridConstraints(1, 1, 1, 2,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
+                -1), null, 0, false));
+        btn_add_sub_task = new JButton();
+        btn_add_sub_task.setText("add parameters");
+        main_panel.add(btn_add_sub_task, new GridConstraints(3, 2, 1, 3,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_clearAll = new JButton();
+        btn_clearAll.setText("Clear All");
+        main_panel.add(btn_clearAll, new GridConstraints(5, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 25), null, 0, false));
+        btn_Remove = new JButton();
+        btn_Remove.setText("Remove");
+        main_panel.add(btn_Remove, new GridConstraints(4, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 25), null, 0, false));
+        btn_copy = new JButton();
+        btn_copy.setText("Copy");
+        main_panel.add(btn_copy, new GridConstraints(4, 2, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 25), null, 0, false));
+        l_task_preview = new JLabel();
+        l_task_preview.setText("Tasks");
+        main_panel.add(l_task_preview, new GridConstraints(1, 5, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return main_panel;
     }
 }
