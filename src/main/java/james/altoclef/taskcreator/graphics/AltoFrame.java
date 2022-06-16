@@ -421,8 +421,9 @@ public class AltoFrame extends JFrame {
         } catch (Exception ignored) {
 
         }
-
-        btn_delTask.setEnabled(table_tasks.getSelectedRow() != -1);
+        boolean entrySelected=table_tasks.getSelectedRow() != -1;
+        btn_delTask.setEnabled(entrySelected);
+        btn_edit.setEnabled(entrySelected);
     }
 
     {
