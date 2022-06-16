@@ -421,7 +421,7 @@ public class AltoFrame extends JFrame {
         } catch (Exception ignored) {
 
         }
-        boolean entrySelected=table_tasks.getSelectedRow() != -1;
+        boolean entrySelected = table_tasks.getSelectedRow() != -1;
         btn_delTask.setEnabled(entrySelected);
         btn_edit.setEnabled(entrySelected);
     }
@@ -569,4 +569,5 @@ public class AltoFrame extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
