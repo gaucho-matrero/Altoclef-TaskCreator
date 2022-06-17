@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="james.altoclef.taskcreator.graphics.AltoFrame">
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="18" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="8" bottom="4" right="0"/>
+    <margin top="8" left="8" bottom="8" right="8"/>
     <constraints>
-      <xy x="20" y="20" width="658" height="516"/>
+      <xy x="20" y="20" width="658" height="519"/>
     </constraints>
     <properties>
       <foreground color="-1"/>
@@ -169,7 +169,7 @@
           </component>
           <component id="29920" class="javax.swing.JLabel" binding="l_task_desc_contents">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="4" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <foreground color="-16777216"/>

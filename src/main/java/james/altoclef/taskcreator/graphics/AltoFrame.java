@@ -134,8 +134,8 @@ public class AltoFrame extends JFrame {
                     btn_delTask.setEnabled(true);
                     btn_edit.setEnabled(true);
                     panel_task_description.setVisible(true);
-                    l_task_desc_title.setText("\"" + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("name") + "\"");
-                    l_task_desc_contents.setText(file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("description"));
+                    l_task_desc_title.setText("Name: \"" + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("name") + "\"");
+                    l_task_desc_contents.setText("Description: " + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("description"));
                     DefaultTableModel m = new DefaultTableModel(new String[]{"task type", "parameters"}, 0) {
                         @Override
                         public boolean isCellEditable(int row, int column) {
@@ -187,7 +187,7 @@ public class AltoFrame extends JFrame {
             } catch (Exception ignored) {
                 //we don't do anything if the table was not modified
             }
-        });
+        }); //TODO Load file from the same location as it was saved
         btn_newTask.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -277,7 +277,7 @@ public class AltoFrame extends JFrame {
                     FileWriter filew = new FileWriter(fd.getDirectory() + newFilename);
                     toWrite.write(filew);
                     filew.close();
-                    manager = new JSONManager(newFilename);
+                    manager = new JSONManager(fd.getDirectory() + newFilename);
                     inform(false);
                 } catch (IOException | JSONException | ParseException | NullPointerException ex) {
                     if (!(ex instanceof NullPointerException))
@@ -415,7 +415,7 @@ public class AltoFrame extends JFrame {
     } //TODO Only display unsaved changes if file was changed. Currently, opening a file causes this to appear
 
     private void exploreForJson(FileDialog fd) throws IOException, ParseException {
-        manager = new JSONManager(fd.getFile());
+        manager = new JSONManager(fd.getDirectory() + fd.getFile());
         file = manager.getFile();
         setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
         l_shareableString.setText("");
@@ -502,8 +502,8 @@ public class AltoFrame extends JFrame {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(0, 8, 4,
-                0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(8, 8, 8,
+                8), -1, -1));
         mainPanel.setForeground(new Color(-1));
         mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         l_prefix = new JLabel();
@@ -648,4 +648,5 @@ public class AltoFrame extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }
