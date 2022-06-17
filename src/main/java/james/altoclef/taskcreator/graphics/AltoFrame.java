@@ -1,5 +1,8 @@
 package james.altoclef.taskcreator.graphics;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import james.altoclef.taskcreator.utils.JSONManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -7,6 +10,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
@@ -17,6 +21,7 @@ import java.awt.event.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 
 public class AltoFrame extends JFrame {
     public static final int UNLOCK_ON_CLOSE = 99;
@@ -129,31 +134,31 @@ public class AltoFrame extends JFrame {
                     btn_delTask.setEnabled(true);
                     btn_edit.setEnabled(true);
                     panel_task_description.setVisible(true);
-                    l_task_desc_title.setText("\""+file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("name")+"\"");
+                    l_task_desc_title.setText("\"" + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("name") + "\"");
                     l_task_desc_contents.setText(file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("description"));
-                    DefaultTableModel m = new DefaultTableModel(new String[]{"task type","parameters"},0){
+                    DefaultTableModel m = new DefaultTableModel(new String[]{"task type", "parameters"}, 0) {
                         @Override
-                    public boolean isCellEditable(int row, int column) {
-                        //all cells false
+                        public boolean isCellEditable(int row, int column) {
+                            //all cells false
                             table_task_desc.setRowSelectionAllowed(false);
                             table_task_desc.setFocusable(false);
-                        return false;
-                    }
+                            return false;
+                        }
                     };
                     Object[] tasks = file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").toList().toArray();
-                    for(int i=0; i<tasks.length; i++){
+                    for (int i = 0; i < tasks.length; i++) {
                         String type = file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).getString("command");
                         Object[] shortdesc_list;
                         String description_short;
-                        try{
-                             shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).getJSONArray("parameters").toList().toArray();
-                              description_short = shortdesc_list[0].toString() + (shortdesc_list.length > 1 ?  " + ... " + shortdesc_list.length + " more": "");
-                        }catch (Exception wasEdited){
-                             shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).get("parameters");
-                             description_short  = (String) java.lang.reflect.Array.get(shortdesc_list[0], 0)+ (shortdesc_list.length > 1 ?  " + ... " + shortdesc_list.length + " more": "");
+                        try {
+                            shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).getJSONArray("parameters").toList().toArray();
+                            description_short = shortdesc_list[0].toString() + (shortdesc_list.length > 1 ? " + ... " + shortdesc_list.length + " more" : "");
+                        } catch (Exception wasEdited) {
+                            shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).get("parameters");
+                            description_short = (String) Array.get(shortdesc_list[0], 0) + (shortdesc_list.length > 1 ? " + ... " + shortdesc_list.length + " more" : "");
                         }
                         //TODO make it look exactly the way it does in the other view. Cut it off after 15 tasks
-                        m.addRow(new String[]{type,description_short});
+                        m.addRow(new String[]{type, description_short});
                     }
                     table_task_desc.setModel(m);
                     table_task_desc.setVisible(true);
@@ -461,18 +466,19 @@ public class AltoFrame extends JFrame {
         btn_delTask.setEnabled(entrySelected);
         btn_edit.setEnabled(entrySelected);
         //clear the table on reset.
-/*        table_task_desc.setModel(new DefaultTableModel(new String[]{"action type","action parameters"},0){
-            *//**
-             * Returns true regardless of parameter values.
-             *
-             * @param row    the row whose value is to be
-             *               queried
-             * @param column the column whose value is to be
-             *               queried
-             * @return true
-             *
-             * @see #setValueAt
-             *//*
+        /*        table_task_desc.setModel(new DefaultTableModel(new
+        String[]{"action type","action parameters"},0){
+         *//**
+         * Returns true regardless of parameter values.
+         *
+         * @param row    the row whose value is to be
+         *               queried
+         * @param column the column whose value is to be
+         *               queried
+         * @return true
+         *
+         * @see #setValueAt
+         *//*
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -481,4 +487,165 @@ public class AltoFrame extends JFrame {
         panel_task_description.setVisible(false);
     }
 
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT
+     * edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(0, 8, 4,
+                0), -1, -1));
+        mainPanel.setForeground(new Color(-1));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        l_prefix = new JLabel();
+        l_prefix.setText("Prefix");
+        mainPanel.add(l_prefix, new GridConstraints(2, 0, 2, 3,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        tf_prefix = new JTextField();
+        tf_prefix.setEditable(false);
+        tf_prefix.setEnabled(false);
+        tf_prefix.setText("custom");
+        mainPanel.add(tf_prefix, new GridConstraints(4, 0, 3, 2,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150,
+                -1), null, 1, false));
+        table_tasks = new JTable();
+        mainPanel.add(table_tasks, new GridConstraints(2, 3, 15, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
+                , 50), null, 0, false));
+        l_v_label = new JLabel();
+        l_v_label.setBackground(new Color(-9346490));
+        l_v_label.setForeground(new Color(-4500880));
+        l_v_label.setText("v1.2");
+        mainPanel.add(l_v_label, new GridConstraints(17, 0, 1, 1,
+                GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_newTask = new JButton();
+        btn_newTask.setHideActionText(false);
+        btn_newTask.setText("New Task");
+        mainPanel.add(btn_newTask, new GridConstraints(11, 0, 1, 2,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_delTask = new JButton();
+        btn_delTask.setText("Delete Task");
+        mainPanel.add(btn_delTask, new GridConstraints(13, 0, 1, 2,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_Compile = new JButton();
+        btn_Compile.setText("Compile");
+        mainPanel.add(btn_Compile, new GridConstraints(17, 3, 1, 1,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        mainPanel.add(spacer1, new GridConstraints(16, 0, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
+                1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
+                false));
+        l_shareableString = new JLabel();
+        l_shareableString.setText("");
+        mainPanel.add(l_shareableString, new GridConstraints(16, 1, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        mainPanel.add(spacer2, new GridConstraints(11, 4, 6, 1,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0,
+                false));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(2, 1, new Insets(8, 8, 0, 0),
+                -1, -1));
+        panel1.setBackground(new Color(-14194321));
+        mainPanel.add(panel1, new GridConstraints(0, 0, 1, 5,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        l_release_title = new JLabel();
+        l_release_title.setForeground(new Color(-1));
+        l_release_title.setText("Functional Release");
+        l_release_title.setVerticalAlignment(0);
+        panel1.add(l_release_title, new GridConstraints(0, 0, 1, 1,
+                GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_space = new JLabel();
+        l_space.setText("");
+        panel1.add(l_space, new GridConstraints(1, 0, 1, 1,
+                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_genShareString = new JButton();
+        btn_genShareString.setText("Create Shared String");
+        mainPanel.add(btn_genShareString, new GridConstraints(14, 0, 1, 2,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_custom_preview = new JLabel();
+        l_custom_preview.setText("Custom Tasks");
+        mainPanel.add(l_custom_preview, new GridConstraints(1, 3, 1, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_edit = new JButton();
+        btn_edit.setText("Edit");
+        mainPanel.add(btn_edit, new GridConstraints(12, 0, 1, 2,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel_task_description = new JPanel();
+        panel_task_description.setLayout(new GridLayoutManager(3, 1,
+                new Insets(8, 8, 8, 8), -1, -1));
+        panel_task_description.setBackground(new Color(-1246977));
+        panel_task_description.setForeground(new Color(-1));
+        mainPanel.add(panel_task_description, new GridConstraints(3, 4, 8, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        l_task_desc_title = new JLabel();
+        l_task_desc_title.setForeground(new Color(-16777216));
+        l_task_desc_title.setText("");
+        panel_task_description.add(l_task_desc_title, new GridConstraints(0,
+                0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_task_desc_contents = new JLabel();
+        l_task_desc_contents.setForeground(new Color(-16777216));
+        l_task_desc_contents.setText("");
+        panel_task_description.add(l_task_desc_contents,
+                new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                        GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED,
+                        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 4
+                        , false));
+        table_task_desc = new JTable();
+        panel_task_description.add(table_task_desc, new GridConstraints(2, 0,
+                1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
+                , 50), null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return mainPanel;
+    }
 }
