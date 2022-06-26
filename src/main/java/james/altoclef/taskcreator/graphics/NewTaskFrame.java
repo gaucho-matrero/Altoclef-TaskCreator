@@ -81,7 +81,7 @@ public class NewTaskFrame extends JDialog {
         commandBox.addItem("goto");
         commandBox.addItem("punk");
         commandBox.addItem("status");
-
+        commandBox.addItem("equip");
 
         addWindowListener(new WindowAdapter() {
             /**

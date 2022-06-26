@@ -71,6 +71,7 @@ public class subtasks_parameterizer extends JDialog {
             switch (command) {
                 // new subtasks registered here
                 case "get" -> loadUI_items();
+                case "equip" -> loadUI_items_equippable();
                 case "goto" -> loadUI_coords();
                 default -> loadUI();
             }
@@ -117,7 +118,7 @@ public class subtasks_parameterizer extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     // This is where we add new kinds of subtasks
                     //TODO Make it so that the "X" cancels operations (right now it saves)
-                    if (command.equals("get")) {
+                    if (command.equals("get") || command.equals("equip")) {
                         if (editing != -1) {
                             params.remove(editing);
                             params.add(editing, new Object[]{item_selector.getSelectedItem(), combo_itemCount_or_dimension.getSelectedItem()});
@@ -175,6 +176,7 @@ public class subtasks_parameterizer extends JDialog {
         } // action listeners
         refreshTable();
     }
+
 
     private void toggleContinuedAdd(boolean b) {
         if (!b) {
@@ -267,15 +269,33 @@ public class subtasks_parameterizer extends JDialog {
         tf_y.setVisible(false);
         tf_z.setVisible(false);
         tf_target.setVisible(false);
-        loadItemComboBoxes();
+        loadItemComboBoxes(false);
+    }
+    private void loadUI_items_equippable() {
+        l_type.setText("equip");
+        btn_remove_action.setVisible(true);
+        tf_x.setVisible(false);
+        tf_y.setVisible(false);
+        tf_z.setVisible(false);
+        tf_target.setVisible(false);
+        loadItemComboBoxes(true);
     }
 
-    private void loadItemComboBoxes() {
-        for (String s : MinecraftUtil.getItems()) {
-            item_selector.addItem(s);
-        }
-        for (int i = 1; i < 65; i++) {
-            combo_itemCount_or_dimension.addItem(i + "");
+    private void loadItemComboBoxes(boolean equippableOnly) {
+        if(equippableOnly){
+            for (String s : MinecraftUtil.getEquippableItems()) {
+                item_selector.addItem(s);
+            }
+            for (int i = 1; i < 65; i++) {
+                combo_itemCount_or_dimension.addItem(i + "");
+            }
+        }else {
+            for (String s : MinecraftUtil.getItems()) {
+                item_selector.addItem(s);
+            }
+            for (int i = 1; i < 65; i++) {
+                combo_itemCount_or_dimension.addItem(i + "");
+            }
         }
     }
 

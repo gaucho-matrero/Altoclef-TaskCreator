@@ -1231,7 +1231,33 @@ public class MinecraftUtil {
             "zombie_wall_head",
             "zombified_piglin_spawn_egg"
     };
+    private static String[] equippableItems = new String[]{
+            "diamond_helmet",
+            "diamond_chestplate",
+            "diamond_leggings",
+            "diamond_boots",
+            "gold_helmet",
+            "gold_chestplate",
+            "gold_leggings",
+            "gold_boots",
+            "leather_helmet",
+            "leather_helmet",
+            "leather_chestplate",
+            "leather_leggings",
+            "netherite_helmet",
+            "netherite_chestplate",
+            "netherite_leggings",
+            "netherite_boots",
+            "iron_boots",
+            "iron_chestplate",
+            "iron_leggings",
+            "iron_boots"
+    };
     public static String[] getItems() {
         return items;
+    }
+
+    public static String[] getEquippableItems() {
+        return equippableItems;
     }
 }
