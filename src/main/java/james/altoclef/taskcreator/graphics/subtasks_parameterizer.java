@@ -300,7 +300,6 @@ public class subtasks_parameterizer extends JDialog {
         }
     }
 
-
     public customSubTask getItems() {
         return new customSubTask(l_type.getText(), params_readonly.toArray());
     }
@@ -405,4 +404,5 @@ public class subtasks_parameterizer extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return main_panel;
     }
+
 }

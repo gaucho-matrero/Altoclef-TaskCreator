@@ -24,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 
 public class AltoFrame extends JFrame {
-    public static final int UNLOCK_ON_CLOSE = 99;
     private JPanel mainPanel;
     private JTextField tf_prefix;
     private JTable table_tasks;
@@ -643,4 +642,5 @@ public class AltoFrame extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
+
 }

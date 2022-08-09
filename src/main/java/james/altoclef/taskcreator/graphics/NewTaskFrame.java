@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class NewTaskFrame extends JDialog {
@@ -466,4 +465,5 @@ public class NewTaskFrame extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return main_panel;
     }
+
 }
