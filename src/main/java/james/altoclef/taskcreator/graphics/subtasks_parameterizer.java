@@ -27,8 +27,10 @@ public class subtasks_parameterizer extends JDialog {
     private JTextField tf_y;
     private JTextField tf_z;
     private JLabel l_action_preview;
+    private JButton btn_remove_action;
     private int editing = -1;
     private final List<Object> params;
+    private List<Object> params_readonly;
     private final String command;
     private boolean discard = true;
 
@@ -39,6 +41,7 @@ public class subtasks_parameterizer extends JDialog {
         setModal(true);
         this.command = command;
         params = new ArrayList<Object>();
+        params_readonly = new ArrayList<Object>();
         initComponents();
         setVisible(true); // must always be last
     }
@@ -49,7 +52,9 @@ public class subtasks_parameterizer extends JDialog {
         setSize(400, 250);
         setModal(true);
         this.command = task.getType();
+        params_readonly = new ArrayList<Object>();
         params = new ArrayList<Object>();
+        Collections.addAll(params_readonly, task.getParameters());
         Collections.addAll(params, task.getParameters());
         if (!task.getType().equals("get")) {
             toggleContinuedAdd(false);
@@ -61,10 +66,12 @@ public class subtasks_parameterizer extends JDialog {
     }
 
     private void initComponents() {
+        setTitle("Squashed Item Task Creator");
         {
             switch (command) {
                 // new subtasks registered here
                 case "get" -> loadUI_items();
+                case "equip" -> loadUI_items_equippable();
                 case "goto" -> loadUI_coords();
                 default -> loadUI();
             }
@@ -79,8 +86,26 @@ public class subtasks_parameterizer extends JDialog {
                             btn_add.setText("Save");
                         }
                     }
+                    btn_remove_action.setEnabled(action_table.getSelectedRow() != -1);
                 }
             });
+            action_table.addKeyListener(new KeyAdapter() {
+                /**
+                 * Invoked when a key has been typed. This event
+                 * occurs when a key press is followed by a key
+                 * release.
+                 *
+                 * @param e
+                 */
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    super.keyTyped(e);
+                    if (e.getKeyChar() == '\u001B') {
+                        action_table.clearSelection();
+                    }
+                }
+            });
+
 
             // ui settings
             btn_add.addActionListener(new ActionListener() {
@@ -92,7 +117,8 @@ public class subtasks_parameterizer extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // This is where we add new kinds of subtasks
-                    if (command.equals("get")) {
+                    //TODO Make it so that the "X" cancels operations (right now it saves)
+                    if (command.equals("get") || command.equals("equip")) {
                         if (editing != -1) {
                             params.remove(editing);
                             params.add(editing, new Object[]{item_selector.getSelectedItem(), combo_itemCount_or_dimension.getSelectedItem()});
@@ -101,22 +127,30 @@ public class subtasks_parameterizer extends JDialog {
                         }
                         toggleContinuedAdd(true);
                     } else if (command.equals("goto")) {
-                        if (editing != -1) {
-                            params.remove(editing);
-                            params.add(editing, new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                        if (tf_x.getText().isEmpty() || tf_y.getText().isEmpty() || tf_z.getText().isEmpty()) {
+                            AltoJsonWarning warning = new AltoJsonWarning("Parse Error", "One of the location fields is empty");
                         } else {
-                            params.add(new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                            if (editing != -1) {
+                                params.remove(editing);
+                                params.add(editing, new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                            } else {
+                                params.add(new Object[]{tf_x.getText(), tf_y.getText(), tf_z.getText(), combo_itemCount_or_dimension.getSelectedItem()});
+                            }
+                            toggleContinuedAdd(false);
                         }
-                        toggleContinuedAdd(false);
                     } else {
-                        if (editing != -1) {
-                            params.remove(editing);
-                            params.add(editing, new Object[]{tf_target.getText()});
-
+                        if (tf_target.getText().isEmpty()) {
+                            AltoJsonWarning warning = new AltoJsonWarning("Parse Error", "The text field is empty");
                         } else {
-                            params.add(new Object[]{tf_target.getText()});
+                            if (editing != -1) {
+                                params.remove(editing);
+                                params.add(editing, new Object[]{tf_target.getText()});
+
+                            } else {
+                                params.add(new Object[]{tf_target.getText()});
+                            }
+                            toggleContinuedAdd(false);
                         }
-                        toggleContinuedAdd(false);
                     }
 
                     editing = -1;
@@ -124,6 +158,15 @@ public class subtasks_parameterizer extends JDialog {
                     refreshTable();
                 }
             });
+
+            btn_remove_action.addActionListener(e -> {
+                if (action_table.getSelectedRow() != -1) {
+                    params.remove(action_table.getSelectedRow());
+                    btn_remove_action.setEnabled(false);
+                    refreshTable();
+                }
+            });
+
             btn_done.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -133,6 +176,7 @@ public class subtasks_parameterizer extends JDialog {
         } // action listeners
         refreshTable();
     }
+
 
     private void toggleContinuedAdd(boolean b) {
         if (!b) {
@@ -155,7 +199,12 @@ public class subtasks_parameterizer extends JDialog {
     }
 
     private void onDone() {
-        discard = false;
+        params_readonly = params;
+        if (action_table.getRowCount() == 0) {
+            discard = true;
+        } else {
+            discard = false;
+        }
         dispose();
     }
 
@@ -177,12 +226,19 @@ public class subtasks_parameterizer extends JDialog {
             AltoJsonWarning aw = new AltoJsonWarning("Table error", "error loading table");
             aw.setVisible(true);
         }
+        if (action_table.getRowCount() == 0) {
+            btn_done.setEnabled(false);
+            btn_remove_action.setEnabled(false);
+        } else {
+            btn_done.setEnabled(true);
+        }
 
     }
 
     private void loadUI() {
         l_type.setText(command);
         item_selector.setVisible(false);
+        btn_remove_action.setVisible(false);
         combo_itemCount_or_dimension.setVisible(false);
         tf_x.setVisible(false);
         tf_y.setVisible(false);
@@ -193,6 +249,7 @@ public class subtasks_parameterizer extends JDialog {
     private void loadUI_coords() {
         l_type.setText("goto");
         item_selector.setVisible(false);
+        btn_remove_action.setVisible(false);
         tf_target.setVisible(false);
         tf_x.setVisible(true);
         tf_y.setVisible(true);
@@ -207,25 +264,44 @@ public class subtasks_parameterizer extends JDialog {
 
     private void loadUI_items() {
         l_type.setText("get");
+        btn_remove_action.setVisible(true);
         tf_x.setVisible(false);
         tf_y.setVisible(false);
         tf_z.setVisible(false);
         tf_target.setVisible(false);
-        loadItemComboBoxes();
+        loadItemComboBoxes(false);
     }
 
-    private void loadItemComboBoxes() {
-        for (String s : MinecraftUtil.getItems()) {
-            item_selector.addItem(s);
-        }
-        for (int i = 1; i < 65; i++) {
-            combo_itemCount_or_dimension.addItem(i + "");
-        }
+    private void loadUI_items_equippable() {
+        l_type.setText("equip");
+        btn_remove_action.setVisible(true);
+        tf_x.setVisible(false);
+        tf_y.setVisible(false);
+        tf_z.setVisible(false);
+        tf_target.setVisible(false);
+        loadItemComboBoxes(true);
     }
 
+    private void loadItemComboBoxes(boolean equippableOnly) {
+        if (equippableOnly) {
+            for (String s : MinecraftUtil.getEquippableItems()) {
+                item_selector.addItem(s);
+            }
+            for (int i = 1; i < 65; i++) {
+                combo_itemCount_or_dimension.addItem(i + "");
+            }
+        } else {
+            for (String s : MinecraftUtil.getItems()) {
+                item_selector.addItem(s);
+            }
+            for (int i = 1; i < 65; i++) {
+                combo_itemCount_or_dimension.addItem(i + "");
+            }
+        }
+    }
 
     public customSubTask getItems() {
-        return new customSubTask(l_type.getText(), params.toArray());
+        return new customSubTask(l_type.getText(), params_readonly.toArray());
     }
 
     public boolean shouldDiscard() {
@@ -314,6 +390,12 @@ public class subtasks_parameterizer extends JDialog {
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_remove_action = new JButton();
+        btn_remove_action.setText("Remove");
+        main_panel.add(btn_remove_action, new GridConstraints(6, 2, 1, 1,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -322,4 +404,5 @@ public class subtasks_parameterizer extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return main_panel;
     }
+
 }

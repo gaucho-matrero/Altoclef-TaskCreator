@@ -21,9 +21,9 @@ import java.awt.event.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 
 public class AltoFrame extends JFrame {
-    public static final int UNLOCK_ON_CLOSE = 99;
     private JPanel mainPanel;
     private JTextField tf_prefix;
     private JTable table_tasks;
@@ -34,11 +34,14 @@ public class AltoFrame extends JFrame {
     private JLabel l_shareableString;
     private JLabel l_prefix;
     private JLabel l_v_label;
-    private JLabel l_task_description_header;
-    private JLabel l_task_description;
     private JLabel l_release_title;
     private JLabel l_space;
     private JLabel l_custom_preview;
+    private JButton btn_edit;
+    private JLabel l_task_desc_title;
+    private JLabel l_task_desc_contents;
+    private JPanel panel_task_description;
+    private JTable table_task_desc;
     private JButton btn_edit_task;
     private JSONObject file;
     private JSONManager manager;
@@ -53,7 +56,7 @@ public class AltoFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        addActionListeners();
+        addListeners();
         setVisible(true);
     }
 
@@ -66,16 +69,16 @@ public class AltoFrame extends JFrame {
     public AltoFrame(String filename) {
         {
             this.setLocationRelativeTo(null);
-            addMenu();
+            addMenu(); //this must come first
             setContentPane(mainPanel);
             setTitle("Altoclef-TaskCreator");
             setSize(750, 500);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setResizable(false);
-            addActionListeners();
+            addListeners();
             setLocationRelativeTo(null);
-            setVisible(true);
             table_tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            setVisible(true); //this must always be last
         } //init
         try {
             manager = new JSONManager(filename);
@@ -84,12 +87,106 @@ public class AltoFrame extends JFrame {
         } catch (Exception e) {
             manager = new JSONManager();
             displayWarning("Altoclef-TaskCreator was unable to find or unable to load any JSON files. Changes will be saved to a new JSON file");
+            file = manager.getFile();
+            setTitle("Altoclef-TaskCreator -- new file");
+            refreshTable();
+            l_shareableString.setText("");
+            inform(true);
         } //load default file
 
         refreshTable();
     }
 
-    private void addActionListeners() {
+    private void addListeners() {
+        table_tasks.addKeyListener(new KeyAdapter() {
+            /**
+             * Invoked when a key has been typed. This event
+             * occurs when a key press is followed by a key
+             * release.
+             *
+             * @param e
+             */
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                if (e.getKeyChar() == '\u001B') {
+                    table_tasks.clearSelection();
+                    btn_delTask.setEnabled(false);
+                    btn_edit.setEnabled(false);
+                    l_task_desc_title.setText("");
+                    l_task_desc_contents.setText("");
+                    panel_task_description.setVisible(false);
+
+                }
+            }
+        });
+        table_tasks.addMouseListener(new MouseAdapter() {
+            /**
+             * {@inheritDoc}
+             *
+             * @param e
+             */
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (table_tasks.getSelectedRow() != -1) {
+                    btn_delTask.setEnabled(true);
+                    btn_edit.setEnabled(true);
+                    panel_task_description.setVisible(true);
+                    l_task_desc_title.setText("Name: \"" + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("name") + "\"");
+                    l_task_desc_contents.setText("Description: " + file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getString("description"));
+                    DefaultTableModel m = new DefaultTableModel(new String[]{"task type", "parameters"}, 0) {
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            //all cells false
+                            table_task_desc.setRowSelectionAllowed(false);
+                            table_task_desc.setFocusable(false);
+                            return false;
+                        }
+                    };
+                    Object[] tasks = file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").toList().toArray();
+                    for (int i = 0; i < tasks.length; i++) {
+                        String type = file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).getString("command");
+                        Object[] shortdesc_list;
+                        String description_short;
+                        try {
+                            shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).getJSONArray("parameters").toList().toArray();
+                            description_short = shortdesc_list[0].toString() + (shortdesc_list.length > 1 ? " + ... " + shortdesc_list.length + " more" : "");
+                        } catch (Exception wasEdited) {
+                            shortdesc_list = (Object[]) file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()).getJSONArray("tasks").getJSONObject(i).get("parameters");
+                            description_short = (String) Array.get(shortdesc_list[0], 0) + (shortdesc_list.length > 1 ? " + ... " + shortdesc_list.length + " more" : "");
+                        }
+                        //TODO make it look exactly the way it does in the other view. Cut it off after 15 tasks
+                        m.addRow(new String[]{type, description_short});
+                    }
+                    table_task_desc.setModel(m);
+                    table_task_desc.setVisible(true);
+                }
+            }
+        });
+        btn_edit.addActionListener(e -> {
+            JSONArray array_on_file = new JSONArray();
+            try {
+                array_on_file = file.getJSONArray("customTasks");
+            } catch (JSONException ignored) {
+                file.put("prefix", tf_prefix.getText());
+                file.put("customTasks", array_on_file);
+            }
+            NewTaskFrame nTF = new NewTaskFrame(file.getJSONArray("customTasks").getJSONObject(table_tasks.getSelectedRow()));
+            try {
+                array_on_file.remove(table_tasks.getSelectedRow());
+                JSONObject toAdd = nTF.write();
+                if (toAdd != null) {
+                    array_on_file.put(toAdd);
+                } else {
+                    AltoJsonWarning warnUserOfBadAction = new AltoJsonWarning("Bad Action", "you cannot save a custom task with no sub actions");
+                }
+                inform(true);
+                refreshTable();
+            } catch (Exception ignored) {
+                //we don't do anything if the table was not modified
+            }
+        }); //TODO Load file from the same location as it was saved
         btn_newTask.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -113,15 +210,17 @@ public class AltoFrame extends JFrame {
                 }
                 NewTaskFrame nTF = new NewTaskFrame();
                 try {
-                    array_on_file.put(nTF.write());
-                    inform(true);
+                    JSONObject toAdd = nTF.write();
+                    if (toAdd != null) {
+                        array_on_file.put(toAdd);
+                        inform(true);
+                    }
                     refreshTable();
                 } catch (Exception ignored) {
                     //we don't do anything if the table was not modified
                 }
             }
         });
-
         btn_delTask.addActionListener(new ActionListener() {
             /**
              * Invoked when an action occurs.
@@ -137,23 +236,15 @@ public class AltoFrame extends JFrame {
                 inform(true);
             }
         });
-        btn_genShareString.addActionListener(new ActionListener() {
-            /**
-             * Invoked when an action occurs.
-             *
-             * @param e the event to be processed
-             */
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String shareable = manager.compressToString();
-                    l_shareableString.setText("Copied to clipboard!");
-                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    StringSelection selection = new StringSelection(shareable);
-                    clipboard.setContents(selection, selection);
-                } catch (UnsupportedEncodingException ex) {
-                    displayWarning("Unable to work with this encoding type");
-                }
+        btn_genShareString.addActionListener(e -> {
+            try {
+                String shareable = manager.compressToString();
+                l_shareableString.setText("Copied to clipboard!");
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                StringSelection selection = new StringSelection(shareable);
+                clipboard.setContents(selection, selection);
+            } catch (UnsupportedEncodingException ex) {
+                displayWarning("Unable to work with this encoding type");
             }
         });
         btn_Compile.addActionListener(new ActionListener() {
@@ -177,7 +268,7 @@ public class AltoFrame extends JFrame {
                     FileWriter filew = new FileWriter(fd.getDirectory() + newFilename);
                     toWrite.write(filew);
                     filew.close();
-                    manager = new JSONManager(newFilename);
+                    manager = new JSONManager(fd.getDirectory() + newFilename);
                     inform(false);
                 } catch (IOException | JSONException | ParseException | NullPointerException ex) {
                     if (!(ex instanceof NullPointerException))
@@ -186,6 +277,11 @@ public class AltoFrame extends JFrame {
                 loadJsonFile(manager.getFile());
             }
         });
+        initComponents();
+    }
+
+    private void initComponents() {
+        panel_task_description.setVisible(false);
     }
 
     /**
@@ -303,6 +399,9 @@ public class AltoFrame extends JFrame {
 
                 }
             });
+            options_viewUsageGuide.addActionListener(e -> {
+                displayWarning("Usage guide currently under construction. Message James Green on discord if you have any questions.");
+            });
         }
 
         this.setJMenuBar(topMenu);
@@ -310,7 +409,7 @@ public class AltoFrame extends JFrame {
     } //TODO Only display unsaved changes if file was changed. Currently, opening a file causes this to appear
 
     private void exploreForJson(FileDialog fd) throws IOException, ParseException {
-        manager = new JSONManager(fd.getFile());
+        manager = new JSONManager(fd.getDirectory() + fd.getFile());
         file = manager.getFile();
         setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
         l_shareableString.setText("");
@@ -357,6 +456,29 @@ public class AltoFrame extends JFrame {
         } catch (Exception ignored) {
 
         }
+        boolean entrySelected = table_tasks.getSelectedRow() != -1;
+        btn_delTask.setEnabled(entrySelected);
+        btn_edit.setEnabled(entrySelected);
+        //clear the table on reset.
+        /*        table_task_desc.setModel(new DefaultTableModel(new
+        String[]{"action type","action parameters"},0){
+         *//**
+         * Returns true regardless of parameter values.
+         *
+         * @param row    the row whose value is to be
+         *               queried
+         * @param column the column whose value is to be
+         *               queried
+         * @return true
+         *
+         * @see #setValueAt
+         *//*
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });*/
+        panel_task_description.setVisible(false);
     }
 
     {
@@ -374,8 +496,8 @@ public class AltoFrame extends JFrame {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(0, 8, 4,
-                0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(18, 5, new Insets(8, 8, 8,
+                8), -1, -1));
         mainPanel.setForeground(new Color(-1));
         mainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-4473925)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         l_prefix = new JLabel();
@@ -402,7 +524,7 @@ public class AltoFrame extends JFrame {
         l_v_label = new JLabel();
         l_v_label.setBackground(new Color(-9346490));
         l_v_label.setForeground(new Color(-4500880));
-        l_v_label.setText("v1.1");
+        l_v_label.setText("v1.2");
         mainPanel.add(l_v_label, new GridConstraints(17, 0, 1, 1,
                 GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
@@ -442,29 +564,16 @@ public class AltoFrame extends JFrame {
                 GridConstraints.FILL_HORIZONTAL,
                 GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0,
                 false));
-        l_task_description_header = new JLabel();
-        l_task_description_header.setEnabled(true);
-        l_task_description_header.setText("");
-        mainPanel.add(l_task_description_header, new GridConstraints(7, 4, 3,
-                1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_FIXED,
-                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        l_task_description = new JLabel();
-        l_task_description.setText("");
-        mainPanel.add(l_task_description, new GridConstraints(10, 4, 1, 1,
-                GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_FIXED,
-                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(2, 1, new Insets(8, 8, 0, 0),
                 -1, -1));
-        panel1.setBackground(new Color(-12032913));
+        panel1.setBackground(new Color(-14194321));
         mainPanel.add(panel1, new GridConstraints(0, 0, 1, 5,
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         l_release_title = new JLabel();
         l_release_title.setForeground(new Color(-1));
-        l_release_title.setText("Barebones Release");
+        l_release_title.setText("Functional Release");
         l_release_title.setVerticalAlignment(0);
         panel1.add(l_release_title, new GridConstraints(0, 0, 1, 1,
                 GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_NONE,
@@ -488,6 +597,43 @@ public class AltoFrame extends JFrame {
                 GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
                 GridConstraints.SIZEPOLICY_FIXED,
                 GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btn_edit = new JButton();
+        btn_edit.setText("Edit");
+        mainPanel.add(btn_edit, new GridConstraints(12, 0, 1, 2,
+                GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel_task_description = new JPanel();
+        panel_task_description.setLayout(new GridLayoutManager(3, 1,
+                new Insets(8, 8, 8, 8), -1, -1));
+        panel_task_description.setBackground(new Color(-1246977));
+        panel_task_description.setForeground(new Color(-1));
+        mainPanel.add(panel_task_description, new GridConstraints(3, 4, 8, 1,
+                GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        l_task_desc_title = new JLabel();
+        l_task_desc_title.setForeground(new Color(-16777216));
+        l_task_desc_title.setText("");
+        panel_task_description.add(l_task_desc_title, new GridConstraints(0,
+                0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        l_task_desc_contents = new JLabel();
+        l_task_desc_contents.setForeground(new Color(-16777216));
+        l_task_desc_contents.setText("");
+        panel_task_description.add(l_task_desc_contents,
+                new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                        GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED,
+                        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0
+                        , false));
+        table_task_desc = new JTable();
+        panel_task_description.add(table_task_desc, new GridConstraints(2, 0,
+                1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_WANT_GROW,
+                GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150
+                , 50), null, 0, false));
     }
 
     /**

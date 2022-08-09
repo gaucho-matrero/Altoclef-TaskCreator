@@ -80,13 +80,16 @@ public class JSONManager {
         compressor.setInput(jsonbytes);
         byte[] compressed = new byte[jsonbytes.length]; //should ALWAYS be big enough to contain compressed data
         compressor.finish();
-        int resultLength = compressor.deflate(compressed);
-        String result = "UNABLE TO CONVERT";
-        result = new String(Base64.getEncoder().encode(compressed));
+        int resultLength = compressor.deflate(compressed); //this must be here as "deflate" returns an int, despite it not being needed
+        // resize compressed to the actual result length (thanks wag your tail!)
+        byte[] compressed2 = new byte[resultLength];
+        System.arraycopy(compressed, 0, compressed2, 0, resultLength);
+        String result = "UNABLE TO CONVERT"; //if things go bad
+        result = new String(Base64.getEncoder().encode(compressed2));
         return result;
     }
 
-    public JSONObject decompressToJson(String decom) throws UnsupportedEncodingException, DataFormatException {
+    public JSONObject decompressToJson(String decom) throws DataFormatException {
         byte[] jsonbytes = Base64.getDecoder().decode(decom);
         Inflater decompressor = new Inflater();
         decompressor.setInput(jsonbytes);
