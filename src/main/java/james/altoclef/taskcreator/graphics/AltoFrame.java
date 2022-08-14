@@ -18,9 +18,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Array;
 
 public class AltoFrame extends JFrame {
@@ -319,10 +317,12 @@ public class AltoFrame extends JFrame {
         JMenu fileMenu = new JMenu("File");
         JMenuItem fileMenu_newFile = new JMenuItem("New");
         JMenu fileMenu_subMenuOpen = new JMenu("Open");
-        JMenuItem fileMenu_subMenuOpen_fromFileSystem = new JMenuItem("From File System");
+        JMenuItem fileMenu_subMenuOpen_fromFileSystem = new JMenuItem("From File chooser");
+        JMenuItem fileMenu_subMenuOpen_fromFilePath = new JMenuItem("From file path");
         JMenuItem fileMenu_subMenuOpen_fromString = new JMenuItem("From String");
         fileMenu.add(fileMenu_newFile);
         fileMenu_subMenuOpen.add(fileMenu_subMenuOpen_fromFileSystem);
+        fileMenu_subMenuOpen.add(fileMenu_subMenuOpen_fromFilePath);
         fileMenu_subMenuOpen.add(fileMenu_subMenuOpen_fromString);
         fileMenu.add(fileMenu_subMenuOpen);
         JMenu options = new JMenu("Tools");
@@ -399,6 +399,23 @@ public class AltoFrame extends JFrame {
 
                 }
             });
+            fileMenu_subMenuOpen_fromFilePath.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    PathImporter importer = new PathImporter();
+                    importer.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                    importer.setTitle("Path importer");
+                    importer.setSize(450, 200);
+                    importer.setLocationRelativeTo(null);
+                    importer.setVisible(true);
+                    try {
+                        String path = importer.getPath();
+                        loadFile(path);
+                    } catch (Exception e) {
+                        displayWarning("Unable to load file");
+                    }
+                }
+            });
             options_viewUsageGuide.addActionListener(e -> {
                 displayWarning("Usage guide currently under construction. Message James Green on discord if you have any questions.");
             });
@@ -410,6 +427,14 @@ public class AltoFrame extends JFrame {
 
     private void exploreForJson(FileDialog fd) throws IOException, ParseException {
         manager = new JSONManager(fd.getDirectory() + fd.getFile());
+        file = manager.getFile();
+        setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
+        l_shareableString.setText("");
+        refreshTable();
+    }
+
+    private void loadFile(String path) throws IOException, ParseException {
+        manager = new JSONManager(path);
         file = manager.getFile();
         setTitle("Altoclef-TaskCreator -- " + manager.getFileName());
         l_shareableString.setText("");
