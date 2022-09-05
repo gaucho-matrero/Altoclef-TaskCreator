@@ -28,10 +28,7 @@ jobs:
 
     - name: Hash Artifacts 
       run: |
-        for u in $(ls) 
-        do
-        echo "$(sha256sum $u)" >> hashes.sha256
-        done
+        sha256sum *.jar > hashes.sha256
       shell: bash
       working-directory: ./build/libs
   
