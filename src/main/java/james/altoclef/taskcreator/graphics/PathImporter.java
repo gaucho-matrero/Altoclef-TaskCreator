@@ -61,6 +61,7 @@ public class PathImporter extends JDialog {
 
     private void onCancel() {
         // add your code here if necessary
+        textField1.setText("");
         dispose();
     }
 

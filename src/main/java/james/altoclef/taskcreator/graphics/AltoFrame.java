@@ -407,6 +407,7 @@ public class AltoFrame extends JFrame {
                     PathImporter importer = new PathImporter();
                     try {
                         String path = importer.getPath();
+                        if(path == null || path.equalsIgnoreCase("")) return; // cancelled
                         loadFile(path);
                     } catch (Exception e) {
                         displayWarning("Unable to load file");
