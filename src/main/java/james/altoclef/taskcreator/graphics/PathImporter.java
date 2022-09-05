@@ -17,12 +17,6 @@ public class PathImporter extends JDialog {
     public PathImporter() {
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Path importer");
-        setSize(450, 200);
-        setLocationRelativeTo(null);
-        setVisible(true);
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -50,6 +44,12 @@ public class PathImporter extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        getRootPane().setDefaultButton(buttonOK);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Path importer");
+        setSize(450, 200);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
     public String getPath() {
         return textField1.getText();
@@ -61,6 +61,7 @@ public class PathImporter extends JDialog {
 
     private void onCancel() {
         // add your code here if necessary
+        textField1.setText("");
         dispose();
     }
 
